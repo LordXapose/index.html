@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Hexploit-Labs // Free Offensive-Security Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0a0e14" id="metaTheme">
+<script>
+  // set theme before paint to avoid a flash of the wrong theme
+  try{ document.documentElement.setAttribute('data-theme', localStorage.getItem('hexploit_theme')||'dark'); }
+  catch(e){ document.documentElement.setAttribute('data-theme','dark'); }
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --radius:4px;
+  --maxw:1200px;
+  --font-display:'Chakra Petch',system-ui,sans-serif;
+}
+/* ===== DARK THEME — Hack The Box ===== */
+:root,[data-theme="dark"]{
+  --bg:#0a0e14;
+  --bg-2:#0f141d;
+  --bg-3:#141b26;
+  --card:#111824;
+  --green:#9fef00;
+  --green-dim:#6fa800;
+  --green-glow:rgba(159,239,0,.15);
+  --cyan:#2ee6d6;
+  --pink:#ff2e88;
+  --text:#c3d0de;
+  --text-dim:#5f7184;
+  --text-faint:#3a4757;
+  --heading:#ffffff;
+  --border:#1c2735;
+  --border-bright:#27384b;
+  --danger:#ff4d5e;
+  --warn:#ffb020;
+  --on-green:#06090d;
+  --btn-bg:#9fef00;
+  --btn-fg:#06090d;
+  --nav-bg:rgba(10,14,20,.82);
+  --glow-top:rgba(159,239,0,.05);
+  --shadow-1:0 20px 40px -24px #000;
+  --shadow-2:0 40px 90px -30px #000;
+  --font-display:'Chakra Petch',system-ui,sans-serif;
+  --hex-url:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50V16l28-16 28 16v34L28 66zm0-2.3l26-14.9V17.2L28 2.3 2 17.2v31.6l26 14.9z' fill='%231c2735' fill-opacity='0.5'/%3E%3C/svg%3E");
+}
+/* ===== LIGHT THEME — Cyfrin Updraft ===== */
+[data-theme="light"]{
+  --bg:#f7f9fb;
+  --bg-2:#f2f4f7;
+  --bg-3:#eaecf0;
+  --card:#ffffff;
+  --green:#0e7090;
+  --green-dim:#155b75;
+  --green-glow:rgba(14,112,144,.13);
+  --cyan:#15b79e;
+  --pink:#ee46bc;
+  --text:#344054;
+  --text-dim:#667085;
+  --text-faint:#98a2b3;
+  --heading:#101828;
+  --border:#eaecf0;
+  --border-bright:#d0d5dd;
+  --danger:#f04438;
+  --warn:#f79009;
+  --on-green:#ffffff;
+  --btn-bg:#101828;
+  --btn-fg:#ffffff;
+  --nav-bg:rgba(255,255,255,.85);
+  --glow-top:rgba(14,112,144,.10);
+  --shadow-1:0 12px 28px -18px rgba(16,24,40,.20);
+  --shadow-2:0 32px 70px -28px rgba(16,24,40,.28);
+  --font-display:'Satoshi','Chakra Petch',system-ui,sans-serif;
+  --hex-url:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50V16l28-16 28 16v34L28 66zm0-2.3l26-14.9V17.2L28 2.3 2 17.2v31.6l26 14.9z' fill='%23d7dde4' fill-opacity='0.55'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* hex grid ambient background */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle at 50% 0%, var(--glow-top), transparent 55%),
+    var(--hex-url);
+  background-size:auto, 56px 100px;
+  pointer-events:none;
+  z-index:0;
+  opacity:.6;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img{display:block;max-width:100%}
+input,textarea,select{font-family:'JetBrains Mono',monospace}
+::selection{background:var(--green);color:#000}
+
+/* scrollbar */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--bg-2)}
+::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--green-dim)}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.mono{font-family:'JetBrains Mono',monospace}
+.green{color:var(--green)}
+.dim{color:var(--text-dim)}
+
+/* ---------- NAV ---------- */
+header.nav{
+  position:sticky;top:0;z-index:50;
+  background:var(--nav-bg);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{display:flex;align-items:center;gap:28px;height:64px}
+.logo{display:flex;align-items:center;gap:11px;font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:.5px}
+.logo .hex{
+  width:30px;height:34px;display:grid;place-items:center;
+  color:var(--green);
+  filter:drop-shadow(0 0 6px var(--green-glow));
+}
+.logo b{color:var(--heading)}
+.logo span{color:var(--green)}
+.logo small{
+  font-family:'JetBrains Mono';font-size:9px;color:var(--text-dim);
+  letter-spacing:2px;display:block;line-height:1;margin-top:2px;font-weight:400;
+}
+.nav-links{display:flex;gap:4px;margin-left:auto;align-items:center}
+.nav-links a{
+  font-family:'JetBrains Mono';font-size:13px;color:var(--text-dim);
+  padding:8px 14px;border-radius:var(--radius);transition:.15s;letter-spacing:.3px;
+}
+.nav-links a:hover{color:var(--text);background:var(--bg-3)}
+.nav-links a.active{color:var(--green)}
+.nav-admin{
+  border:1px solid var(--border-bright)!important;
+  color:var(--text)!important;
+}
+.nav-admin:hover{border-color:var(--green-dim)!important;color:var(--green)!important}
+.nav-admin i{margin-right:6px;font-size:11px}
+.theme-toggle{
+  width:38px;height:38px;border-radius:var(--radius);display:grid;place-items:center;
+  color:var(--text-dim);border:1px solid var(--border-bright);font-size:14px;transition:.16s;
+}
+.theme-toggle:hover{color:var(--green);border-color:var(--green-dim);background:var(--green-glow)}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  font-family:'JetBrains Mono';font-size:13px;font-weight:500;letter-spacing:.4px;
+  padding:10px 18px;border-radius:var(--radius);transition:.16s;
+  border:1px solid transparent;white-space:nowrap;
+}
+.btn-primary{background:var(--btn-bg);color:var(--btn-fg);font-weight:700}
+.btn-primary:hover{box-shadow:0 0 0 1px var(--btn-bg),0 0 18px var(--green-glow);transform:translateY(-1px)}
+.btn-ghost{border-color:var(--border-bright);color:var(--text)}
+.btn-ghost:hover{border-color:var(--green-dim);color:var(--green);background:var(--green-glow)}
+.btn-danger{border-color:rgba(255,77,94,.4);color:var(--danger)}
+.btn-danger:hover{background:rgba(255,77,94,.12);border-color:var(--danger)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-icon{padding:7px 9px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+
+/* ---------- HERO ---------- */
+.hero{padding:70px 0 50px;position:relative}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono';font-size:12px;color:var(--green);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;
+  padding:5px 12px;border:1px solid var(--border-bright);border-radius:30px;
+  background:var(--green-glow);
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{
+  font-family:var(--font-display);font-weight:700;font-size:clamp(34px,5vw,56px);
+  line-height:1.05;color:var(--heading);letter-spacing:-.5px;margin-bottom:20px;
+}
+.hero h1 .x{color:var(--green);position:relative}
+.hero p.lead{font-size:17px;color:var(--text-dim);max-width:480px;margin-bottom:30px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:30px;margin-top:34px;padding-top:26px;border-top:1px solid var(--border)}
+.hero-stats .stat .n{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--green)}
+.hero-stats .stat .l{font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase}
+
+/* terminal */
+.terminal{
+  background:#070a0f;border:1px solid var(--border-bright);border-radius:8px;
+  box-shadow:0 30px 70px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(159,239,0,.04);
+  overflow:hidden;font-family:'JetBrains Mono';font-size:13.5px;
+}
+.term-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#0d1219;border-bottom:1px solid var(--border)}
+.term-bar .c{width:11px;height:11px;border-radius:50%}
+.term-bar .c.r{background:#ff5f56}.term-bar .c.y{background:#ffbd2e}.term-bar .c.g{background:#27c93f}
+.term-bar .t{margin-left:10px;font-size:11px;color:var(--text-faint);letter-spacing:.5px}
+.term-body{padding:18px 18px 22px;min-height:240px;line-height:1.8}
+.term-body .line{white-space:pre-wrap;word-break:break-word}
+.term-body .pr{color:var(--green)}
+.term-body .ar{color:var(--cyan)}
+.term-body .cm{color:var(--text-faint)}
+.term-body .ok{color:var(--green)}
+.term-body .hl{color:#fff}
+.cursor{display:inline-block;width:9px;height:16px;background:var(--green);vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- SECTION HEAD ---------- */
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:0 0 28px;flex-wrap:wrap}
+.sec-head .ttl{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--heading);display:flex;align-items:center;gap:12px}
+.sec-head .ttl .num{font-family:'JetBrains Mono';font-size:14px;color:var(--green);font-weight:500}
+.sec-head .sub{font-size:14px;color:var(--text-dim);margin-top:4px}
+
+/* ---------- TOOLBAR ---------- */
+.toolbar{display:flex;gap:14px;margin-bottom:30px;flex-wrap:wrap;align-items:center}
+.search-box{position:relative;flex:1;min-width:220px}
+.search-box i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-faint);font-size:13px}
+.search-box input{
+  width:100%;background:var(--bg-2);border:1px solid var(--border);
+  color:var(--text);padding:12px 14px 12px 38px;border-radius:var(--radius);
+  font-size:13px;transition:.16s;
+}
+.search-box input:focus{outline:none;border-color:var(--green-dim);box-shadow:0 0 0 3px var(--green-glow)}
+.search-box input::placeholder{color:var(--text-faint)}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);
+  padding:9px 14px;border:1px solid var(--border);border-radius:30px;
+  transition:.15s;letter-spacing:.3px;
+}
+.chip:hover{border-color:var(--border-bright);color:var(--text)}
+.chip.active{background:var(--green);color:var(--on-green);border-color:var(--green);font-weight:700}
+
+/* ---------- COURSE GRID ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}
+.course-card{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  overflow:hidden;transition:.2s;display:flex;flex-direction:column;cursor:pointer;
+  position:relative;
+}
+.course-card:hover{border-color:var(--green-dim);transform:translateY(-3px);box-shadow:var(--shadow-1)}
+.cc-thumb{position:relative;aspect-ratio:16/9;background:var(--bg-3);overflow:hidden}
+.cc-thumb img{width:100%;height:100%;object-fit:cover;transition:.3s}
+.course-card:hover .cc-thumb img{transform:scale(1.05);opacity:.92}
+.cc-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(10,14,20,.85))}
+.cc-cat{
+  position:absolute;top:10px;left:10px;z-index:2;
+  font-family:'JetBrains Mono';font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--green);background:rgba(7,10,15,.8);border:1px solid rgba(159,239,0,.3);
+  padding:4px 9px;border-radius:3px;backdrop-filter:blur(4px);
+}
+.cc-play{
+  position:absolute;bottom:10px;right:10px;z-index:2;
+  font-family:'JetBrains Mono';font-size:11px;color:var(--text);
+  background:rgba(7,10,15,.8);padding:4px 9px;border-radius:3px;
+  display:flex;align-items:center;gap:6px;
+}
+.cc-body{padding:16px 17px 18px;display:flex;flex-direction:column;flex:1}
+.cc-body h3{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--heading);margin-bottom:7px;line-height:1.25}
+.cc-body p{font-size:13px;color:var(--text-dim);flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:15px;padding-top:14px;border-top:1px solid var(--border)}
+.cc-meta{font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);display:flex;gap:14px}
+.cc-meta i{color:var(--green-dim);margin-right:4px}
+.cc-arrow{color:var(--green);font-size:13px;transition:.2s}
+.course-card:hover .cc-arrow{transform:translateX(3px)}
+
+/* empty state */
+.empty{
+  text-align:center;padding:70px 20px;border:1px dashed var(--border-bright);
+  border-radius:8px;background:var(--bg-2);
+}
+.empty i{font-size:34px;color:var(--text-faint);margin-bottom:16px}
+.empty h3{font-family:var(--font-display);color:var(--heading);font-size:19px;margin-bottom:8px}
+.empty p{color:var(--text-dim);font-size:14px;max-width:340px;margin:0 auto}
+
+/* ---------- COURSE DETAIL ---------- */
+.crumb{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);margin:26px 0 22px;display:flex;align-items:center;gap:9px}
+.crumb a:hover{color:var(--green)}
+.crumb i{font-size:9px;color:var(--text-faint)}
+.crumb .cur{color:var(--text)}
+
+.detail-banner{
+  border:1px solid var(--border);border-radius:8px;padding:26px 28px;margin-bottom:26px;
+  background:
+    linear-gradient(120deg,var(--card),var(--bg-2));
+  position:relative;overflow:hidden;
+}
+.detail-banner::before{
+  content:"";position:absolute;right:-40px;top:-40px;width:240px;height:240px;
+  background:radial-gradient(circle,var(--green-glow),transparent 70%);pointer-events:none;
+}
+.db-cat{font-family:'JetBrains Mono';font-size:11px;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:inline-block}
+.detail-banner h1{font-family:var(--font-display);font-weight:700;font-size:clamp(24px,3.5vw,34px);color:var(--heading);margin-bottom:12px;line-height:1.1;max-width:760px}
+.detail-banner p{color:var(--text-dim);font-size:15px;max-width:680px}
+.db-meta{display:flex;gap:24px;margin-top:18px;flex-wrap:wrap}
+.db-meta div{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim)}
+.db-meta i{color:var(--green-dim);margin-right:6px}
+
+.detail-layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+.player-wrap{background:#000;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.player-frame{position:relative;aspect-ratio:16/9;background:#000}
+.player-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.player-empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--text-faint);font-family:'JetBrains Mono';font-size:13px;text-align:center}
+.player-info{padding:18px 20px;border-top:1px solid var(--border)}
+.player-info h2{font-family:var(--font-display);font-weight:600;font-size:19px;color:var(--heading);margin-bottom:6px}
+.player-info .pi-sub{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.player-info .pi-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+.playlist{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:sticky;top:84px}
+.pl-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pl-head .pt{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--heading)}
+.pl-head .pc{font-family:'JetBrains Mono';font-size:11px;color:var(--green)}
+.pl-list{max-height:560px;overflow-y:auto}
+.pl-item{
+  display:flex;gap:13px;padding:13px 16px;border-bottom:1px solid var(--border);
+  transition:.15s;cursor:pointer;position:relative;
+}
+.pl-item:last-child{border-bottom:none}
+.pl-item:hover{background:var(--bg-3)}
+.pl-item.active{background:linear-gradient(90deg,var(--green-glow),transparent);border-left:2px solid var(--green)}
+.pl-thumb{position:relative;width:96px;flex-shrink:0;aspect-ratio:16/9;border-radius:3px;overflow:hidden;background:var(--bg-3)}
+.pl-thumb img{width:100%;height:100%;object-fit:cover}
+.pl-thumb .idx{position:absolute;top:0;left:0;background:rgba(7,10,15,.85);font-family:'JetBrains Mono';font-size:10px;color:var(--green);padding:2px 5px;border-bottom-right-radius:3px}
+.pl-thumb .pp{position:absolute;inset:0;display:grid;place-items:center;background:rgba(7,10,15,.45);color:#fff;font-size:15px;opacity:0;transition:.15s}
+.pl-item:hover .pp{opacity:1}
+.pl-item.active .pp{opacity:1;color:var(--green)}
+.pl-info{flex:1;min-width:0}
+.pl-info h4{font-size:13px;color:var(--text);font-weight:500;line-height:1.35;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pl-item.active .pl-info h4{color:var(--heading)}
+.pl-info .pl-tags{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono';font-size:10px;color:var(--text-dim)}
+.pl-watched{color:var(--green)!important}
+.pl-dl{color:var(--text-faint);transition:.15s}
+.pl-dl:hover{color:var(--green)}
+
+/* ---------- ADMIN ---------- */
+.admin-gate{max-width:440px;margin:80px auto;text-align:center}
+.gate-term{background:#070a0f;border:1px solid var(--border-bright);border-radius:8px;overflow:hidden;text-align:left;box-shadow:0 30px 70px -30px #000}
+.gate-body{padding:26px 24px 28px;font-family:'JetBrains Mono'}
+.gate-body .l1{color:#5f7184;font-size:13px;margin-bottom:4px}
+.gate-body .l2{color:#9fef00;font-size:13px;margin-bottom:20px}
+.gate-input{display:flex;align-items:center;gap:10px;background:#0d1219;border:1px solid #1f2b3a;border-radius:var(--radius);padding:0 14px;transition:.16s}
+.gate-input:focus-within{border-color:#6fa800;box-shadow:0 0 0 3px rgba(159,239,0,.15)}
+.gate-input .pr{color:#9fef00;font-size:14px}
+.gate-input input{flex:1;background:none;border:none;color:#c3d0de;padding:14px 0;font-size:14px;letter-spacing:1px}
+.gate-input input:focus{outline:none}
+.gate-err{color:var(--danger);font-size:12px;margin-top:14px;min-height:16px;font-family:'JetBrains Mono')}
+.gate-hint{margin-top:20px;font-size:11px;color:var(--text-faint);font-family:'JetBrains Mono'}
+.gate-body .btn-primary{background:#9fef00;color:#06090d}
+.gate-body .btn-primary:hover{box-shadow:0 0 0 1px #9fef00,0 0 18px rgba(159,239,0,.15)}
+
+.admin-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:28px 0 26px;flex-wrap:wrap}
+.admin-head .ah-l h1{font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--heading);display:flex;align-items:center;gap:11px}
+.admin-head .ah-l h1 i{color:var(--green);font-size:19px}
+.admin-head .ah-l p{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);margin-top:4px}
+.admin-bar{display:flex;gap:10px}
+
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.astat{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px}
+.astat .n{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--green)}
+.astat .l{font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+
+.adm-course{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:16px;overflow:hidden}
+.ac-head{display:flex;align-items:center;gap:14px;padding:15px 18px;border-bottom:1px solid var(--border)}
+.ac-thumb{width:64px;height:38px;border-radius:3px;object-fit:cover;background:var(--bg-3);flex-shrink:0}
+.ac-info{flex:1;min-width:0}
+.ac-info h3{font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--heading);display:flex;align-items:center;gap:9px}
+.ac-info .ac-cat{font-family:'JetBrains Mono';font-size:10px;color:var(--green);background:var(--green-glow);padding:2px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase}
+.ac-info p{font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);margin-top:3px}
+.ac-actions{display:flex;gap:7px;flex-shrink:0}
+.badge-unpub{font-family:'JetBrains Mono';font-size:9px;color:var(--warn);border:1px solid rgba(255,176,32,.4);padding:2px 6px;border-radius:3px;letter-spacing:.5px}
+
+.ac-videos{padding:8px 18px 16px}
+.av-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border);border-radius:5px;margin-top:8px;background:var(--bg-2)}
+.av-idx{font-family:'JetBrains Mono';font-size:12px;color:var(--green-dim);width:24px;text-align:center;flex-shrink:0}
+.av-thumb{width:54px;height:32px;border-radius:3px;object-fit:cover;background:var(--bg-3);flex-shrink:0}
+.av-info{flex:1;min-width:0}
+.av-info h4{font-size:13px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av-info .av-sub{font-family:'JetBrains Mono';font-size:10px;color:var(--text-faint);margin-top:2px;display:flex;gap:12px;flex-wrap:wrap}
+.av-info .av-sub span{display:inline-flex;align-items:center;gap:4px}
+.av-ctrl{display:flex;gap:4px;flex-shrink:0}
+.av-ctrl button{width:28px;height:28px;border-radius:4px;border:1px solid var(--border-bright);color:var(--text-dim);font-size:11px;display:grid;place-items:center;transition:.14s}
+.av-ctrl button:hover:not(:disabled){color:var(--green);border-color:var(--green-dim)}
+.av-ctrl button.del:hover:not(:disabled){color:var(--danger);border-color:var(--danger)}
+.av-ctrl button:disabled{opacity:.3;cursor:not-allowed}
+.add-video-btn{margin-top:10px;width:100%;border:1px dashed var(--border-bright);padding:10px;border-radius:5px;font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);transition:.15s}
+.add-video-btn:hover{border-color:var(--green-dim);color:var(--green);background:var(--green-glow)}
+
+/* ---------- MODAL ---------- */
+.modal-bg{position:fixed;inset:0;background:rgba(4,7,11,.78);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:50px 20px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border-bright);border-radius:8px;width:100%;max-width:560px;box-shadow:var(--shadow-2);animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+.modal-head h3{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--heading);display:flex;align-items:center;gap:10px}
+.modal-head h3 i{color:var(--green);font-size:15px}
+.modal-head .x{width:30px;height:30px;border-radius:5px;color:var(--text-dim);display:grid;place-items:center;transition:.15s}
+.modal-head .x:hover{background:var(--bg-3);color:var(--danger)}
+.modal-body{padding:22px}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px}
+.fld label .req{color:var(--green)}
+.fld input,.fld textarea,.fld select{
+  width:100%;background:var(--bg-2);border:1px solid var(--border);color:var(--text);
+  padding:11px 13px;border-radius:var(--radius);font-size:13px;transition:.15s;
+}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--green-dim);box-shadow:0 0 0 3px var(--green-glow)}
+.fld textarea{resize:vertical;min-height:74px;font-family:'Inter'}
+.fld .hint{font-family:'JetBrains Mono';font-size:10px;color:var(--text-faint);margin-top:6px}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.thumb-preview{margin-top:10px;border:1px solid var(--border);border-radius:5px;overflow:hidden;aspect-ratio:16/9;background:var(--bg-3);max-width:200px}
+.thumb-preview img{width:100%;height:100%;object-fit:cover}
+.modal-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 22px;border-top:1px solid var(--border)}
+.chk{display:flex;align-items:center;gap:9px;font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);cursor:pointer}
+.chk input{width:16px;height:16px;accent-color:var(--green);cursor:pointer}
+
+/* toast */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{
+  background:var(--bg-3);border:1px solid var(--border-bright);border-left:3px solid var(--green);
+  border-radius:6px;padding:13px 18px;font-family:'JetBrains Mono';font-size:13px;color:var(--text);
+  display:flex;align-items:center;gap:11px;min-width:240px;box-shadow:var(--shadow-1);
+  animation:toastIn .25s ease;
+}
+.toast.err{border-left-color:var(--danger)}
+.toast i{color:var(--green)}.toast.err i{color:var(--danger)}
+@keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+
+/* footer */
+footer.ft{border-top:1px solid var(--border);margin-top:80px;padding:34px 0;position:relative;z-index:1}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.ft-inner .fl{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim)}
+.ft-inner .fl b{color:var(--green)}
+.ft-inner .fr{font-family:'JetBrains Mono';font-size:11px;color:var(--text-faint)}
+
+/* ===== resilient player facade ===== */
+.yt-facade{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;background:#000;display:block;overflow:hidden}
+.yt-facade img{width:100%;height:100%;object-fit:cover;opacity:.72;transition:.25s}
+.yt-facade:hover img{opacity:.88;transform:scale(1.03)}
+.yt-facade .yt-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:68px;height:68px;border-radius:50%;background:rgba(159,239,0,.94);color:#06090d;display:grid;place-items:center;font-size:24px;box-shadow:0 10px 34px rgba(0,0,0,.55);transition:.2s}
+.yt-facade:hover .yt-play{transform:translate(-50%,-50%) scale(1.09)}
+.yt-facade .yt-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono';font-size:11px;color:#fff;background:rgba(7,10,15,.82);padding:5px 12px;border-radius:30px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.embed-warn{display:flex;align-items:flex-start;gap:10px;background:rgba(255,176,32,.1);border:1px solid rgba(255,176,32,.4);color:var(--warn);border-radius:6px;padding:11px 14px;font-size:12.5px;line-height:1.5;margin-bottom:16px}
+.embed-warn i{margin-top:2px;flex-shrink:0}
+.embed-warn b{color:var(--warn)}
+
+/* ===== progress ===== */
+.progress{height:6px;background:var(--bg-3);border-radius:30px;overflow:hidden}
+.progress > i{display:block;height:100%;background:var(--green);border-radius:30px;transition:width .4s}
+.cc-progress{margin-top:13px}
+.cc-progress .pl-row{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:10px;color:var(--text-dim);margin-bottom:5px}
+
+/* ===== badges ===== */
+.badge{font-family:'JetBrains Mono';font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:3px 7px;border-radius:3px;border:1px solid var(--border-bright);color:var(--text-dim);background:rgba(7,10,15,.6);backdrop-filter:blur(4px)}
+.badge.lvl-beginner{color:#3ddc84;border-color:rgba(61,220,132,.4)}
+.badge.lvl-intermediate{color:var(--warn);border-color:rgba(255,176,32,.45)}
+.badge.lvl-advanced{color:var(--danger);border-color:rgba(255,77,94,.45)}
+.badge.new{color:var(--on-green);background:var(--green);border-color:var(--green);font-weight:700}
+.card-badges{position:absolute;top:10px;right:10px;z-index:2;display:flex;gap:6px}
+.badq{color:var(--danger)}
+
+/* ===== continue watching ===== */
+.resume{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;gap:18px;align-items:center;margin-bottom:34px}
+.resume img{width:130px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;flex-shrink:0}
+.resume .rb{flex:1;min-width:0}
+.resume .rk{font-family:'JetBrains Mono';font-size:11px;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.resume h3{font-family:var(--font-display);color:var(--heading);font-size:18px;margin-bottom:10px}
+
+/* ===== sort ===== */
+.sort-select{background:var(--bg-2);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono';font-size:12px;padding:11px 12px;border-radius:var(--radius);cursor:pointer}
+.sort-select:focus{outline:none;border-color:var(--green-dim)}
+
+/* ===== roadmaps (catalog) ===== */
+.paths-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+.path-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 22px;cursor:pointer;transition:.2s}
+.path-card:hover{border-color:var(--green-dim);transform:translateY(-3px);box-shadow:var(--shadow-1)}
+.path-card h3{font-family:var(--font-display);color:var(--heading);font-size:18px;margin-bottom:9px;display:flex;align-items:center;gap:10px}
+.path-card h3 i{color:var(--green)}
+.path-card p{color:var(--text-dim);font-size:13px;margin-bottom:15px;line-height:1.5}
+.path-steps{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.path-steps .st{font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);background:var(--bg-3);padding:4px 10px;border-radius:30px;border:1px solid var(--border)}
+.path-steps .st.done{color:var(--green);border-color:var(--green-dim);background:var(--green-glow)}
+.path-steps .sep{color:var(--text-faint);font-size:11px}
+
+/* ===== roadmap detail ===== */
+.path-course{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;transition:.18s;cursor:pointer}
+.path-course:hover{border-color:var(--green-dim);transform:translateX(3px)}
+.path-num{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--green);width:36px;text-align:center;flex-shrink:0}
+.path-course img{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;flex-shrink:0}
+
+/* ===== lesson actions / resources / command ===== */
+.lesson-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.icon-btn{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono';font-size:12px;padding:9px 14px;border:1px solid var(--border-bright);border-radius:var(--radius);color:var(--text-dim);transition:.15s;cursor:pointer}
+.icon-btn:hover{color:var(--green);border-color:var(--green-dim)}
+.icon-btn.on{color:var(--green);border-color:var(--green-dim);background:var(--green-glow)}
+.res-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.cmd-block{margin-top:16px;background:#070a0f;border:1px solid var(--border-bright);border-radius:6px;overflow:hidden}
+.cmd-block .cmd-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0d1219;border-bottom:1px solid #1c2735}
+.cmd-block .cmd-head span{font-family:'JetBrains Mono';font-size:10px;color:#5f7184;letter-spacing:1px;text-transform:uppercase}
+.cmd-copy{font-family:'JetBrains Mono';font-size:11px;color:#9fef00;display:flex;align-items:center;gap:6px;cursor:pointer}
+.cmd-block pre{padding:14px;overflow-x:auto;font-family:'JetBrains Mono';font-size:13px;color:#c3d0de;white-space:pre-wrap;word-break:break-word;line-height:1.6}
+
+/* ===== notes ===== */
+.notes-panel{margin-top:20px;border-top:1px solid var(--border);padding-top:18px}
+.notes-panel label{font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;display:flex;justify-content:space-between;margin-bottom:9px}
+.notes-panel .saved{color:var(--green);text-transform:none;letter-spacing:0}
+.notes-panel textarea{width:100%;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:12px;font-family:'Inter';font-size:13px;min-height:84px;resize:vertical;transition:.15s}
+.notes-panel textarea:focus{outline:none;border-color:var(--green-dim);box-shadow:0 0 0 3px var(--green-glow)}
+
+/* ===== quiz ===== */
+.quiz{margin-top:26px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px 26px}
+.quiz h2{font-family:var(--font-display);color:var(--heading);font-size:20px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.quiz h2 i{color:var(--green)}
+.quiz .qsub{color:var(--text-dim);font-size:13px;margin-bottom:22px}
+.quiz-q{margin-bottom:22px}
+.quiz-q .qt{font-weight:600;color:var(--heading);margin-bottom:12px;font-size:15px}
+.quiz-q .qt b{color:var(--green);font-family:'JetBrains Mono';margin-right:9px}
+.quiz-opt{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:.14s;font-size:14px;color:var(--text)}
+.quiz-opt:hover{border-color:var(--border-bright)}
+.quiz-opt input{accent-color:var(--green);width:16px;height:16px;flex-shrink:0}
+.quiz-opt.correct{border-color:#3ddc84;background:rgba(61,220,132,.10)}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(255,77,94,.10)}
+.quiz-result{margin-top:18px;padding:14px 18px;border-radius:6px;font-family:'JetBrains Mono';font-size:14px;border:1px solid var(--border-bright);display:flex;align-items:center;gap:10px}
+.quiz-result.pass{color:#3ddc84;border-color:rgba(61,220,132,.4)}
+.quiz-result.fail{color:var(--warn);border-color:rgba(255,176,32,.4)}
+
+/* ===== comments ===== */
+.comments{margin-top:26px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px 26px}
+.comments h2{font-family:var(--font-display);color:var(--heading);font-size:20px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.comments h2 i{color:var(--green)}
+.comments-empty{font-size:13px;color:var(--text-dim);line-height:1.75}
+.comments-empty b{color:var(--text)}
+.comments-empty code{font-family:'JetBrains Mono';background:var(--bg-3);padding:2px 6px;border-radius:3px;color:var(--green);font-size:12px}
+
+/* ===== admin tabs / settings ===== */
+.adm-tabs{display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.adm-tab{font-family:'JetBrains Mono';font-size:13px;color:var(--text-dim);padding:11px 18px;border-bottom:2px solid transparent;transition:.15s;cursor:pointer}
+.adm-tab:hover{color:var(--text)}
+.adm-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.settings-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px 26px;margin-bottom:18px;max-width:680px}
+.settings-card h3{font-family:var(--font-display);color:var(--heading);font-size:17px;margin-bottom:6px}
+.settings-card p.sc-sub{color:var(--text-dim);font-size:13px;margin-bottom:18px;line-height:1.6}
+.settings-card code{font-family:'JetBrains Mono';background:var(--bg-3);padding:2px 6px;border-radius:3px;color:var(--green);font-size:12px}
+.publish-steps{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);line-height:2;background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-top:14px}
+.publish-steps b{color:var(--green)}
+
+/* ===== modal repeaters ===== */
+.res-edit{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.res-edit input{flex:1;background:var(--bg-2);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:var(--radius);font-size:13px}
+.res-edit input:focus{outline:none;border-color:var(--green-dim)}
+.res-edit .rm{flex-shrink:0;min-width:38px;height:38px;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-dim);display:grid;place-items:center;cursor:pointer;transition:.14s}
+.res-edit .rm:hover{color:var(--danger);border-color:var(--danger)}
+.res-edit .chk input{flex:none;width:18px;height:18px;accent-color:var(--green)}
+.add-row{font-family:'JetBrains Mono';font-size:12px;color:var(--green);margin-top:4px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:none;border:none}
+.pick-list{border:1px solid var(--border);border-radius:6px;max-height:220px;overflow-y:auto;background:var(--bg-2)}
+.pick-item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)}
+.pick-item:last-child{border-bottom:none}
+.pick-item .pi-ord{font-family:'JetBrains Mono';color:var(--green);font-size:12px;width:20px;flex-shrink:0}
+.pick-item .pi-ctrl{margin-left:auto;display:flex;gap:4px}
+.pick-item .pi-ctrl .rm{width:28px;height:28px;border:1px solid var(--border-bright);border-radius:4px;color:var(--text-dim);display:grid;place-items:center;font-size:10px;cursor:pointer;transition:.14s}
+.pick-item .pi-ctrl .rm:hover:not(:disabled){color:var(--green);border-color:var(--green-dim)}
+.pick-item .pi-ctrl .rm:disabled{opacity:.3;cursor:not-allowed}
+
+/* views */
+.view{display:none;animation:fadeIn .25s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:36px}
+  .terminal{order:-1}
+  .detail-layout{grid-template-columns:1fr}
+  .playlist{position:static}
+  .pl-list{max-height:none}
+  .admin-stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .wrap{padding:0 16px}
+  .nav-links a:not(.nav-admin){display:none}
+  .fld-row{grid-template-columns:1fr}
+  .hero-stats{gap:20px}
+  .grid{grid-template-columns:1fr}
+  .ac-head{flex-wrap:wrap}
+  .toast-wrap{left:16px;right:16px;bottom:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#/" class="logo">
+      <span class="hex"><i class="fa-solid fa-cube"></i></span>
+      <span><b>Hexploit</b><span>-Labs</span><small>OFFENSIVE SECURITY TRAINING</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#/" data-nav="catalog">~/courses</a>
+      <a href="#/" data-scroll="pathsSection" data-nav="roadmaps">~/roadmaps</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light or dark theme" title="Toggle theme"><i class="fa-solid fa-sun"></i></button>
+      <a href="#/admin" class="nav-admin" data-nav="admin"><i class="fa-solid fa-terminal"></i>admin</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ CATALOG VIEW ============ -->
+  <section id="view-catalog" class="view">
+    <div class="wrap">
+      <div class="hero">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow"><span class="dot"></span> 100% free &middot; no signup</span>
+            <h1>Learn to <span class="x">break things</span>, the right way.</h1>
+            <p class="lead">Hands-on offensive-security courses — recon, exploitation, web, and beyond. Stream every lesson free, grab the lab files, and build real skills. No paywall, no account.</p>
+            <div class="hero-cta">
+              <a href="#courses" class="btn btn-primary"><i class="fa-solid fa-play"></i> Browse courses</a>
+              <a href="#/admin" class="btn btn-ghost"><i class="fa-solid fa-terminal"></i> Instructor panel</a>
+            </div>
+            <div class="hero-stats" id="heroStats"></div>
+          </div>
+          <div class="terminal">
+            <div class="term-bar">
+              <span class="c r"></span><span class="c y"></span><span class="c g"></span>
+              <span class="t">root@hexploit:~</span>
+            </div>
+            <div class="term-body" id="termBody"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resumeStrip"></div>
+      <div id="pathsSection"></div>
+      <div id="courses" style="padding-top:14px">
+        <div class="sec-head">
+          <div>
+            <div class="ttl"><span class="num">01</span> Course Catalog</div>
+            <div class="sub">Pick a path. Every module streams free and ships with downloadable lab resources.</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="search courses by name or keyword…" autocomplete="off">
+          </div>
+          <div class="filters" id="filterChips"></div>
+          <select class="sort-select" id="sortSelect">
+            <option value="newest">Newest</option>
+            <option value="az">A – Z</option>
+            <option value="lessons">Most lessons</option>
+          </select>
+        </div>
+
+        <div class="grid" id="courseGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COURSE DETAIL VIEW ============ -->
+  <section id="view-course" class="view">
+    <div class="wrap" id="courseDetail"></div>
+  </section>
+
+  <!-- ============ ADMIN VIEW ============ -->
+  <section id="view-admin" class="view">
+    <div class="wrap" id="adminRoot"></div>
+  </section>
+
+  <!-- ============ ROADMAP DETAIL VIEW ============ -->
+  <section id="view-path" class="view">
+    <div class="wrap" id="pathDetail"></div>
+  </section>
+</main>
+
+<footer class="ft">
+  <div class="wrap ft-inner">
+    <div class="fl"><b>Hexploit-Labs</b> &mdash; free offensive-security training</div>
+    <div class="fr">built single-file &middot; data lives in your browser &middot; videos via youtube</div>
+  </div>
+</footer>
+
+<!-- ============ MODAL ROOT ============ -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalEl"></div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   HEXPLOIT-LABS — single-file EdTech platform
+   Catalog source: shared ./courses.json (with localStorage draft fallback)
+   Personal progress/notes/bookmarks: localStorage, per browser, never exported
+   ============================================================ */
+
+const DB_KEY      = 'hexploit_labs_db_v2';
+const PROFILE_KEY = 'hexploit_profile_v1';
+const AUTHORED_KEY= 'hexploit_authored';
+const ADMIN_PASS  = 'admin123';                 // demo gate — change before going live
+const NEW_DAYS    = 14;
+
+/* ---------- tiny utils ---------- */
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const uid = (p='id')=> p+'_'+Math.random().toString(36).slice(2,9);
+const esc = (v)=> String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function safeUrl(u){
+  u=String(u||'').trim(); if(!u) return '';
+  try{ const x=new URL(u, location.href); return (x.protocol==='http:'||x.protocol==='https:')?x.href:''; }
+  catch(e){ return ''; }
+}
+function ytId(raw){
+  raw=String(raw||'').trim();
+  if(/^[A-Za-z0-9_-]{11}$/.test(raw)) return raw;
+  const m=raw.match(/(?:v=|\/embed\/|youtu\.be\/|\/shorts\/|\/v\/)([A-Za-z0-9_-]{11})/);
+  return m?m[1]:'';
+}
+const ytThumb = id => id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '';
+const ytEmbed = id => `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
+async function copyText(t){
+  try{ await navigator.clipboard.writeText(t); return true; }
+  catch(e){
+    try{ const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); return true; }
+    catch(e2){ return false; }
+  }
+}
+
+/* ---------- catalog data ---------- */
+function seed(){
+  const now=Date.now();
+  return { settings:{ giscus:{repo:'',repoId:'',category:'General',categoryId:''} },
+    paths:[
+      { id:uid('p'), title:'Become a Web Attacker', description:'A guided route from mapping a target to exploiting the modern web.', courseIds:[] },
+    ],
+    courses:[
+    { id:uid('c'), title:'Recon & Footprinting', category:'Recon', published:true, level:'Beginner', hours:2, prerequisites:'', createdAt:now,
+      description:'Map a target before you ever send a payload. OSINT, subdomain discovery, port & service enumeration, and turning noise into an attack surface.',
+      thumbnail:'',
+      videos:[
+        {id:uid('v'),title:'What is reconnaissance?',youtubeId:'lc7scxvKQOo',resources:[],command:'',labUrl:'',labLabel:''},
+        {id:uid('v'),title:'Passive OSINT with open sources',youtubeId:'qwA6MmbeGNo',resources:[],command:'whois example.com\ndig +short example.com\nsublist3r -d example.com',labUrl:'https://tryhackme.com/room/passiverecon',labLabel:'TryHackMe: Passive Recon'},
+        {id:uid('v'),title:'Subdomain enumeration, end to end',youtubeId:'2C6Ovyc4lqM',resources:[],command:'',labUrl:'',labLabel:''},
+      ],
+      quiz:[
+        {id:uid('q'),q:'Which technique does NOT touch the target directly?',options:['Port scanning','Passive OSINT','Brute forcing logins','Service fingerprinting'],answer:1},
+      ]},
+    { id:uid('c'), title:'Web Exploitation 101', category:'Web', published:true, level:'Intermediate', hours:3, prerequisites:'Recon & Footprinting', createdAt:now,
+      description:'The bugs that still own the modern web: injection, broken auth, IDOR, SSRF and how to find and exploit each one in a lab you control.',
+      thumbnail:'',
+      videos:[
+        {id:uid('v'),title:'Setting up a safe web lab',youtubeId:'X4eRbHgRawI',resources:[],command:'docker run -d -p 80:80 vulnerables/web-dvwa',labUrl:'',labLabel:''},
+        {id:uid('v'),title:'SQL injection from scratch',youtubeId:'wX672JzPQAk',resources:[],command:"' OR '1'='1' -- -",labUrl:'',labLabel:''},
+      ], quiz:[]},
+    { id:uid('c'), title:'Linux for Hackers', category:'Fundamentals', published:true, level:'Beginner', hours:2, prerequisites:'', createdAt:now,
+      description:'The shell is your primary weapon. Filesystem, permissions, processes, networking and the command-line muscle memory every operator needs.',
+      thumbnail:'',
+      videos:[
+        {id:uid('v'),title:'The terminal, demystified',youtubeId:'oxuRxtrO2Ag',resources:[],command:'',labUrl:'',labLabel:''},
+      ], quiz:[]},
+  ]};
+}
+
+function migrate(d){
+  if(!d || typeof d!=='object') d={};
+  if(!Array.isArray(d.courses)) d.courses=[];
+  if(!Array.isArray(d.paths)) d.paths=[];
+  if(!d.settings) d.settings={};
+  if(!d.settings.giscus) d.settings.giscus={repo:'',repoId:'',category:'General',categoryId:''};
+  d.courses.forEach(c=>{
+    c.id=c.id||uid('c');
+    c.level=c.level||'';
+    c.hours=(c.hours===0||c.hours)?c.hours:null;
+    c.prerequisites=c.prerequisites||'';
+    c.createdAt=c.createdAt||Date.now();
+    c.published=c.published!==false;
+    if(!Array.isArray(c.quiz)) c.quiz=[];
+    if(!Array.isArray(c.videos)) c.videos=[];
+    c.videos.forEach(v=>{
+      v.id=v.id||uid('v');
+      if(!Array.isArray(v.resources)){
+        v.resources = v.downloadUrl ? [{label:'Download lab files',url:v.downloadUrl}] : [];
+      }
+      delete v.downloadUrl;
+      v.command=v.command||'';
+      v.labUrl=v.labUrl||''; v.labLabel=v.labLabel||'';
+    });
+  });
+  d.paths.forEach(p=>{ p.id=p.id||uid('p'); if(!Array.isArray(p.courseIds)) p.courseIds=[]; p.description=p.description||''; });
+  return d;
+}
+
+function readDraft(){ try{ const r=localStorage.getItem(DB_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+function saveDraft(){ try{ localStorage.setItem(DB_KEY, JSON.stringify(db)); localStorage.setItem(AUTHORED_KEY,'1'); }catch(e){ toast('Could not save — storage may be full.',true); } }
+const isAuthor = ()=>{ try{ return localStorage.getItem(AUTHORED_KEY)==='1'; }catch(e){ return false; } };
+
+async function fetchCoursesJson(){
+  try{
+    const r=await fetch('courses.json',{cache:'no-store'});
+    if(!r.ok) return null;
+    const j=await r.json();
+    return (j && Array.isArray(j.courses)) ? j : null;
+  }catch(e){ return null; }
+}
+
+/* ---------- personal profile (per-user) ---------- */
+function loadProfile(){
+  let p={}; try{ p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}'); }catch(e){ p={}; }
+  return {
+    watched:new Set(p.watched||[]),
+    completed:new Set(p.completed||[]),
+    bookmarks:new Set(p.bookmarks||[]),
+    notes:p.notes||{},
+    resume:p.resume||{},
+    last:p.last||null,
+    quiz:p.quiz||{},
+  };
+}
+function saveProfile(){
+  try{
+    localStorage.setItem(PROFILE_KEY, JSON.stringify({
+      watched:[...profile.watched], completed:[...profile.completed], bookmarks:[...profile.bookmarks],
+      notes:profile.notes, resume:profile.resume, last:profile.last, quiz:profile.quiz,
+    }));
+  }catch(e){}
+}
+
+let db = migrate(seed());
+let profile = loadProfile();
+let adminAuthed=false, adminTab='courses';
+let activeFilter='All', searchTerm='', sortMode='newest';
+
+/* ---------- data helpers ---------- */
+const courseById = id => db.courses.find(c=>c.id===id);
+function courseThumb(c){
+  const t=safeUrl(c.thumbnail); if(t) return t;
+  const first=(c.videos||[]).map(v=>ytId(v.youtubeId)).find(Boolean);
+  return first?ytThumb(first):'';
+}
+function categories(){ const s=new Set(db.courses.map(c=>c.category).filter(Boolean)); return ['All',...[...s].sort()]; }
+const lessonDone = v => profile.completed.has(v.id) || profile.watched.has(v.id);
+function courseProgress(c){
+  const total=(c.videos||[]).length;
+  const done=(c.videos||[]).filter(lessonDone).length;
+  return {total,done,pct: total?Math.round(done/total*100):0};
+}
+const isNew = c => c.createdAt && (Date.now()-c.createdAt) < NEW_DAYS*864e5;
+
+/* ---------- toast ---------- */
+function toast(msg,isErr=false){
+  const w=$('#toastWrap'); const el=document.createElement('div');
+  el.className='toast'+(isErr?' err':'');
+  el.innerHTML=`<i class="fa-solid ${isErr?'fa-triangle-exclamation':'fa-circle-check'}"></i><span>${esc(msg)}</span>`;
+  w.appendChild(el);
+  setTimeout(()=>{ el.style.transition='.3s'; el.style.opacity='0'; el.style.transform='translateX(30px)'; setTimeout(()=>el.remove(),300); },2600);
+}
+
+/* ============================================================ ROUTER ============================================================ */
+function router(){
+  const h=location.hash||'#/';
+  const parts=h.replace(/^#\/?/,'').split('/').filter(Boolean);
+  $$('.view').forEach(v=>v.classList.remove('active'));
+  $$('.nav-links a').forEach(a=>a.classList.remove('active'));
+  if(parts[0]==='course' && parts[1]){ renderCourse(parts[1]); $('#view-course').classList.add('active'); }
+  else if(parts[0]==='path' && parts[1]){ renderPath(parts[1]); $('#view-path').classList.add('active'); }
+  else if(parts[0]==='admin'){ $('[data-nav="admin"]').classList.add('active'); renderAdmin(); $('#view-admin').classList.add('active'); }
+  else { $('[data-nav="catalog"]').classList.add('active'); renderCatalog(); $('#view-catalog').classList.add('active'); }
+  window.scrollTo({top:0,behavior:'auto'});
+}
+window.addEventListener('hashchange', router);
+
+/* ============================================================ CATALOG ============================================================ */
+function renderHeroStats(){
+  const pub=db.courses.filter(c=>c.published);
+  const vids=pub.reduce((n,c)=>n+(c.videos?.length||0),0);
+  const cats=new Set(pub.map(c=>c.category).filter(Boolean)).size;
+  $('#heroStats').innerHTML=`
+    <div class="stat"><div class="n">${pub.length}</div><div class="l">Courses</div></div>
+    <div class="stat"><div class="n">${vids}</div><div class="l">Lessons</div></div>
+    <div class="stat"><div class="n">${cats||0}</div><div class="l">Tracks</div></div>
+    <div class="stat"><div class="n">&euro;0</div><div class="l">Forever</div></div>`;
+}
+
+function renderResume(){
+  const box=$('#resumeStrip'); if(!box) return;
+  const last=profile.last; const c=last&&courseById(last.courseId);
+  if(!c || !c.published || !(c.videos||[]).length){ box.innerHTML=''; return; }
+  const p=courseProgress(c); const thumb=courseThumb(c);
+  const idx=Math.min(last.index||0, c.videos.length-1);
+  box.innerHTML=`<div class="resume">
+    ${thumb?`<img src="${esc(thumb)}" alt="" onerror="this.style.display='none'">`:''}
+    <div class="rb">
+      <div class="rk"><i class="fa-solid fa-clock-rotate-left"></i> Continue watching</div>
+      <h3>${esc(c.title)}</h3>
+      <div class="progress" style="max-width:340px"><i style="width:${p.pct}%"></i></div>
+      <div class="mono dim" style="font-size:11px;margin-top:6px">lesson ${idx+1} of ${c.videos.length} &middot; ${p.pct}% complete</div>
+    </div>
+    <a class="btn btn-primary" href="#/course/${esc(c.id)}"><i class="fa-solid fa-play"></i> Resume</a>
+  </div>`;
+}
+
+function renderPathsSection(){
+  const box=$('#pathsSection'); if(!box) return;
+  const paths=db.paths.filter(p=>(p.courseIds||[]).some(id=>{const c=courseById(id);return c&&c.published;}));
+  if(!paths.length){ box.innerHTML=''; return; }
+  box.innerHTML=`
+    <div class="sec-head"><div><div class="ttl"><span class="num">00</span> Roadmaps</div>
+    <div class="sub">Guided routes that chain courses into a path from zero to job-ready.</div></div></div>
+    <div class="paths-row">${paths.map(pathCard).join('')}</div>
+    <div style="height:34px"></div>`;
+  $$('#pathsSection [data-path]').forEach(el=>el.onclick=()=>location.hash='#/path/'+el.dataset.path);
+}
+function pathCard(p){
+  const courses=(p.courseIds||[]).map(courseById).filter(c=>c&&c.published);
+  const steps=courses.map((c,i)=>{
+    const done=courseProgress(c).pct===100;
+    return `${i?'<span class="sep">›</span>':''}<span class="st ${done?'done':''}">${esc(c.title)}</span>`;
+  }).join('');
+  return `<div class="path-card" data-path="${esc(p.id)}">
+    <h3><i class="fa-solid fa-route"></i> ${esc(p.title)}</h3>
+    <p>${esc(p.description||'')}</p>
+    <div class="path-steps">${steps||'<span class="st">no courses yet</span>'}</div>
+  </div>`;
+}
+
+function renderFilters(){
+  const wrap=$('#filterChips');
+  wrap.innerHTML=categories().map(c=>`<button class="chip ${c===activeFilter?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  $$('#filterChips .chip').forEach(ch=>ch.onclick=()=>{ activeFilter=ch.dataset.cat; renderFilters(); renderGrid(); });
+}
+
+function sortCourses(list){
+  const a=[...list];
+  if(sortMode==='az') a.sort((x,y)=>x.title.localeCompare(y.title));
+  else if(sortMode==='lessons') a.sort((x,y)=>(y.videos?.length||0)-(x.videos?.length||0));
+  else a.sort((x,y)=>(y.createdAt||0)-(x.createdAt||0)); // newest
+  return a;
+}
+
+function renderGrid(){
+  const grid=$('#courseGrid');
+  let list=db.courses.filter(c=>c.published);
+  if(activeFilter!=='All') list=list.filter(c=>c.category===activeFilter);
+  if(searchTerm){ const q=searchTerm.toLowerCase();
+    list=list.filter(c=>(c.title+' '+c.description+' '+c.category+' '+(c.videos||[]).map(v=>v.title).join(' ')).toLowerCase().includes(q)); }
+  list=sortCourses(list);
+  if(!list.length){
+    grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i>
+      <h3>No courses match</h3><p>${searchTerm||activeFilter!=='All'?'Try clearing the search or switching tracks.':'Head to the instructor panel to publish your first course.'}</p></div>`;
+    return;
+  }
+  grid.innerHTML=list.map(c=>{
+    const thumb=courseThumb(c); const n=c.videos?.length||0; const pr=courseProgress(c);
+    const lvl=c.level?`<span class="badge lvl-${c.level.toLowerCase()}">${esc(c.level)}</span>`:'';
+    const isnew=isNew(c)?'<span class="badge new">NEW</span>':'';
+    return `<article class="course-card" data-go="course/${esc(c.id)}">
+      <div class="cc-thumb">
+        ${thumb?`<img src="${esc(thumb)}" alt="" loading="lazy" onerror="this.style.display='none'">`:''}
+        <span class="cc-cat">${esc(c.category||'General')}</span>
+        <div class="card-badges">${isnew}${lvl}</div>
+        <span class="cc-play"><i class="fa-solid fa-circle-play"></i> ${n} lesson${n===1?'':'s'}</span>
+      </div>
+      <div class="cc-body">
+        <h3>${esc(c.title)}</h3>
+        <p>${esc(c.description)}</p>
+        ${pr.done>0?`<div class="cc-progress"><div class="pl-row"><span>${pr.done}/${pr.total} done</span><span>${pr.pct}%</span></div><div class="progress"><i style="width:${pr.pct}%"></i></div></div>`:''}
+        <div class="cc-foot">
+          <div class="cc-meta">
+            ${c.hours?`<span><i class="fa-solid fa-clock"></i>${esc(c.hours)}h</span>`:''}
+            <span><i class="fa-solid fa-layer-group"></i>${esc(c.category||'General')}</span>
+          </div>
+          <span class="cc-arrow">access <i class="fa-solid fa-arrow-right-long"></i></span>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+  $$('#courseGrid [data-go]').forEach(el=>el.onclick=()=>location.hash='#/'+el.dataset.go);
+}
+
+function renderCatalog(){
+  renderHeroStats(); renderResume(); renderPathsSection(); renderFilters();
+  const sortSel=$('#sortSelect'); if(sortSel){ sortSel.value=sortMode; sortSel.onchange=()=>{ sortMode=sortSel.value; renderGrid(); }; }
+  renderGrid();
+}
+$('#searchInput').addEventListener('input', e=>{ searchTerm=e.target.value.trim(); renderGrid(); });
+
+/* ============================================================ PATH DETAIL ============================================================ */
+function renderPath(id){
+  const p=db.paths.find(x=>x.id===id); const root=$('#pathDetail');
+  if(!p){ root.innerHTML=`<div class="crumb"><a href="#/">~/courses</a></div><div class="empty" style="margin-top:30px"><i class="fa-solid fa-ghost"></i><h3>Roadmap not found</h3><a href="#/" class="btn btn-ghost" style="margin-top:18px"><i class="fa-solid fa-arrow-left"></i> Back</a></div>`; return; }
+  const courses=(p.courseIds||[]).map(courseById).filter(c=>c&&c.published);
+  const totalDone=courses.filter(c=>courseProgress(c).pct===100).length;
+  root.innerHTML=`
+    <div class="crumb"><a href="#/">~/courses</a> <i class="fa-solid fa-chevron-right"></i> <span class="cur">roadmaps</span> <i class="fa-solid fa-chevron-right"></i> <span class="cur">${esc(p.title)}</span></div>
+    <div class="detail-banner">
+      <span class="db-cat"><i class="fa-solid fa-route"></i> Roadmap</span>
+      <h1>${esc(p.title)}</h1><p>${esc(p.description||'')}</p>
+      <div class="db-meta"><div><i class="fa-solid fa-graduation-cap"></i>${courses.length} courses</div><div><i class="fa-solid fa-circle-check"></i>${totalDone} completed</div></div>
+    </div>
+    ${courses.length?courses.map((c,i)=>{
+      const pr=courseProgress(c); const thumb=courseThumb(c);
+      return `<div class="path-course" data-go="${esc(c.id)}">
+        <span class="path-num">${String(i+1).padStart(2,'0')}</span>
+        ${thumb?`<img src="${esc(thumb)}" alt="" onerror="this.style.visibility='hidden'">`:''}
+        <div style="flex:1;min-width:0">
+          <h3 style="font-family:var(--font-display);color:var(--heading);font-size:17px;margin-bottom:6px">${esc(c.title)}</h3>
+          <div class="progress" style="max-width:300px"><i style="width:${pr.pct}%"></i></div>
+          <div class="mono dim" style="font-size:11px;margin-top:6px">${pr.done}/${pr.total} lessons &middot; ${pr.pct}%</div>
+        </div>
+        <span class="cc-arrow"><i class="fa-solid fa-arrow-right-long"></i></span>
+      </div>`;
+    }).join(''):'<div class="empty"><i class="fa-solid fa-folder-open"></i><h3>No courses in this roadmap yet</h3></div>'}`;
+  $$('#pathDetail [data-go]').forEach(el=>el.onclick=()=>location.hash='#/course/'+el.dataset.go);
+}
+
+/* ============================================================ COURSE DETAIL ============================================================ */
+let currentCourse=null, currentVideoIdx=0, notesTimer=null;
+
+function renderCourse(id){
+  const c=courseById(id); const root=$('#courseDetail');
+  if(!c || !c.published){
+    root.innerHTML=`<div class="crumb"><a href="#/">~/courses</a></div>
+      <div class="empty" style="margin-top:30px"><i class="fa-solid fa-ghost"></i><h3>Course not found</h3>
+      <p>This course may have been unpublished or removed.</p>
+      <a href="#/" class="btn btn-ghost" style="margin-top:18px"><i class="fa-solid fa-arrow-left"></i> Back to catalog</a></div>`;
+    return;
+  }
+  currentCourse=c;
+  const vids=c.videos||[]; const n=vids.length; const pr=courseProgress(c);
+  const startIdx=Math.min(profile.resume[c.id]||0, Math.max(0,n-1));
+  const lvl=c.level?`<div><i class="fa-solid fa-signal"></i>${esc(c.level)}</div>`:'';
+  const hrs=c.hours?`<div><i class="fa-solid fa-clock"></i>${esc(c.hours)} hours</div>`:'';
+  const pre=c.prerequisites?`<div><i class="fa-solid fa-diagram-project"></i>Prereq: ${esc(c.prerequisites)}</div>`:'';
+  root.innerHTML=`
+    <div class="crumb"><a href="#/">~/courses</a> <i class="fa-solid fa-chevron-right"></i> <span class="cur">${esc(c.title)}</span></div>
+    <div class="detail-banner">
+      <span class="db-cat">${esc(c.category||'General')}</span>
+      <h1>${esc(c.title)}</h1><p>${esc(c.description)}</p>
+      <div class="db-meta">
+        <div><i class="fa-solid fa-circle-play"></i>${n} lesson${n===1?'':'s'}</div>
+        ${hrs}${lvl}${pre}
+        <div><i class="fa-solid fa-chart-simple"></i>${pr.pct}% complete</div>
+      </div>
+      <div class="progress" style="max-width:420px;margin-top:16px"><i style="width:${pr.pct}%"></i></div>
+    </div>
+    <div class="detail-layout">
+      <div>
+        <div class="player-wrap">
+          <div class="player-frame" id="playerFrame"></div>
+          <div class="player-info" id="playerInfo"></div>
+        </div>
+        <div id="quizMount"></div>
+        <div id="commentsMount"></div>
+      </div>
+      <aside class="playlist">
+        <div class="pl-head"><span class="pt">Playlist</span><span class="pc">${n} item${n===1?'':'s'}</span></div>
+        <div class="pl-list" id="plList"></div>
+      </aside>
+    </div>`;
+  if(!n){
+    $('#playerFrame').innerHTML=`<div class="player-empty">No lessons in this course yet.</div>`;
+    $('#playerInfo').innerHTML=`<h2>Coming soon</h2><div class="pi-sub">The instructor hasn't added lessons here.</div>`;
+    $('#plList').innerHTML=`<div style="padding:24px;text-align:center;color:var(--text-faint);font-family:'JetBrains Mono';font-size:12px">empty playlist</div>`;
+  } else {
+    renderPlaylist(); loadVideo(startIdx,false);
+  }
+  renderQuiz(c); renderComments(c);
+}
+
+function renderPlaylist(){
+  const c=currentCourse;
+  $('#plList').innerHTML=c.videos.map((v,i)=>{
+    const id=ytId(v.youtubeId); const done=lessonDone(v); const bm=profile.bookmarks.has(v.id);
+    return `<div class="pl-item ${i===currentVideoIdx?'active':''}" data-idx="${i}">
+      <div class="pl-thumb">${id?`<img src="${ytThumb(id)}" alt="" loading="lazy">`:''}<span class="idx">${String(i+1).padStart(2,'0')}</span><span class="pp"><i class="fa-solid fa-play"></i></span></div>
+      <div class="pl-info"><h4>${esc(v.title)}</h4>
+        <div class="pl-tags">
+          ${done?'<span class="pl-watched"><i class="fa-solid fa-circle-check"></i> done</span>':'<span><i class="fa-regular fa-circle"></i> lesson '+(i+1)+'</span>'}
+          ${bm?'<span class="pl-watched"><i class="fa-solid fa-bookmark"></i></span>':''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  $$('#plList .pl-item').forEach(el=>el.onclick=()=>loadVideo(+el.dataset.idx,true));
+}
+
+/* ---------- resilient YouTube player (gracefully handles error 153 / blocked embeds) ---------- */
+let _ytApiState=0; const _ytWaiters=[];
+function loadYTApi(cb){
+  if(_ytApiState===2){ cb(true); return; }
+  _ytWaiters.push(cb);
+  if(_ytApiState===0){
+    _ytApiState=1;
+    window.onYouTubeIframeAPIReady=()=>{ _ytApiState=2; _ytWaiters.splice(0).forEach(fn=>{try{fn(true);}catch(e){}}); };
+    const s=document.createElement('script'); s.src='https://www.youtube.com/iframe_api';
+    s.onerror=()=>{ _ytApiState=0; _ytWaiters.splice(0).forEach(fn=>{try{fn(false);}catch(e){}}); };
+    document.head.appendChild(s);
+  }
+}
+function embedLikelyBlocked(){
+  try{ if(location.protocol==='file:') return true; const o=(window.location.origin||''); return o==='null'||o===''; }
+  catch(e){ return true; }
+}
+function ytFallbackCard(frame,id){
+  frame.innerHTML='<div class="player-empty" style="flex-direction:column;gap:14px;padding:24px;text-align:center">'
+    +'<div style="max-width:360px;line-height:1.55;color:var(--text-dim)">This video can\'t embed in this context <span class="mono" style="color:var(--warn)">(error 153)</span>. It plays fine on YouTube, and inline once the site is served over https.</div>'
+    +'<a class="btn btn-primary btn-sm" href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i> Watch on YouTube</a></div>';
+}
+let _ytPlayer=null, _ytTimer=null;
+function injectYouTube(frame, id, title){
+  if(embedLikelyBlocked()){ ytFallbackCard(frame,id); return; }
+  frame.innerHTML='<div id="ytHost"></div>';
+  let settled=false;
+  const fail=()=>{ if(settled) return; settled=true; ytFallbackCard(frame,id); };
+  clearTimeout(_ytTimer); _ytTimer=setTimeout(fail,6500);
+  loadYTApi((ok)=>{
+    if(!ok){ fail(); return; }
+    try{
+      _ytPlayer=new YT.Player('ytHost',{ width:'100%',height:'100%',videoId:id,host:'https://www.youtube-nocookie.com',
+        playerVars:{rel:0,modestbranding:1,autoplay:1,playsinline:1},
+        events:{ onReady:()=>{ settled=true; clearTimeout(_ytTimer); }, onError:()=>{ clearTimeout(_ytTimer); fail(); } } });
+    }catch(e){ fail(); }
+  });
+}
+function mountPlayer(frame, id, title, autoplay){
+  if(autoplay){ injectYouTube(frame,id,title); return; }
+  const hint = embedLikelyBlocked() ? '<i class="fa-brands fa-youtube"></i> Opens on YouTube' : 'Click to play';
+  frame.innerHTML='<button class="yt-facade" type="button">'
+    +'<img src="'+ytThumb(id)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
+    +'<span class="yt-play"><i class="fa-solid fa-play"></i></span>'
+    +'<span class="yt-hint">'+hint+'</span></button>';
+  frame.querySelector('.yt-facade').addEventListener('click',()=>{
+    if(embedLikelyBlocked()) window.open('https://www.youtube.com/watch?v='+id,'_blank','noopener');
+    else injectYouTube(frame,id,title);
+  });
+}
+function embedWarnHTML(){
+  return '<div class="embed-warn"><i class="fa-solid fa-triangle-exclamation"></i><span>Heads up: opened as a local file or sandboxed preview, so YouTube blocks inline embeds here (<b>error 153</b>). Deploy to https (GitHub Pages / Netlify) or run a local server and videos play inline. For now they open on YouTube.</span></div>';
+}
+
+function loadVideo(idx, autoplay){
+  const c=currentCourse; currentVideoIdx=idx; const v=c.videos[idx]; const id=ytId(v.youtubeId);
+  const frame=$('#playerFrame');
+  if(id) mountPlayer(frame, id, v.title, autoplay);
+  else frame.innerHTML = `<div class="player-empty">Invalid YouTube ID for this lesson.<br>Fix it in the instructor panel.</div>`;
+  // auto-watched + resume tracking
+  profile.watched.add(v.id);
+  profile.resume[c.id]=idx;
+  profile.last={courseId:c.id,index:idx,ts:Date.now()};
+  saveProfile();
+
+  const done=profile.completed.has(v.id);
+  const bm=profile.bookmarks.has(v.id);
+  const res=(v.resources||[]).map(r=>({label:r.label||'Download',url:safeUrl(r.url)})).filter(r=>r.url);
+  const lab=safeUrl(v.labUrl);
+
+  $('#playerInfo').innerHTML=`
+    ${embedLikelyBlocked()?embedWarnHTML():''}
+    <h2>${esc(v.title)}</h2>
+    <div class="pi-sub"><i class="fa-solid fa-graduation-cap"></i> ${esc(c.title)} &middot; lesson ${idx+1} of ${c.videos.length}</div>
+    <div class="lesson-actions">
+      <button class="icon-btn ${done?'on':''}" id="completeBtn"><i class="fa-${done?'solid':'regular'} fa-circle-check"></i> ${done?'Completed':'Mark complete'}</button>
+      <button class="icon-btn ${bm?'on':''}" id="bookmarkBtn"><i class="fa-${bm?'solid':'regular'} fa-bookmark"></i> ${bm?'Saved':'Save'}</button>
+      ${lab?`<a class="icon-btn" href="${esc(lab)}" target="_blank" rel="noopener"><i class="fa-solid fa-flask"></i> ${esc(v.labLabel||'Practice this')}</a>`:''}
+      ${id?`<a class="icon-btn" href="https://www.youtube.com/watch?v=${esc(id)}" target="_blank" rel="noopener" title="Won't play? Watch it on YouTube"><i class="fa-brands fa-youtube"></i> YouTube</a>`:''}
+      ${idx<c.videos.length-1?`<button class="icon-btn" id="nextBtn"><i class="fa-solid fa-forward-step"></i> Next</button>`:''}
+    </div>
+    ${res.length?`<div class="res-row">${res.map(r=>`<a class="btn btn-primary btn-sm" href="${esc(r.url)}" target="_blank" rel="noopener" download><i class="fa-solid fa-download"></i> ${esc(r.label)}</a>`).join('')}</div>`:''}
+    ${v.command?`<div class="cmd-block"><div class="cmd-head"><span>$ commands</span><button class="cmd-copy" id="cmdCopy"><i class="fa-regular fa-copy"></i> copy</button></div><pre id="cmdPre">${esc(v.command)}</pre></div>`:''}
+    <div class="notes-panel">
+      <label>My notes <span class="saved" id="notesSaved"></span></label>
+      <textarea id="notesArea" placeholder="Jot down what you learned, commands, gotchas… (saved automatically, only on this device)">${esc(profile.notes[v.id]||'')}</textarea>
+    </div>`;
+
+  $('#completeBtn').onclick=()=>{
+    if(profile.completed.has(v.id)) profile.completed.delete(v.id); else profile.completed.add(v.id);
+    saveProfile(); loadVideo(idx,false); // refresh state + progress
+  };
+  $('#bookmarkBtn').onclick=()=>{
+    if(profile.bookmarks.has(v.id)){ profile.bookmarks.delete(v.id); toast('Removed from saved'); }
+    else { profile.bookmarks.add(v.id); toast('Saved for later'); }
+    saveProfile(); renderPlaylist();
+    const b=$('#bookmarkBtn'); const on=profile.bookmarks.has(v.id);
+    b.className='icon-btn '+(on?'on':''); b.innerHTML=`<i class="fa-${on?'solid':'regular'} fa-bookmark"></i> ${on?'Saved':'Save'}`;
+  };
+  const nb=$('#nextBtn'); if(nb) nb.onclick=()=>loadVideo(idx+1,true);
+  const cc=$('#cmdCopy'); if(cc) cc.onclick=async()=>{ const ok=await copyText(v.command); cc.innerHTML=`<i class="fa-solid fa-check"></i> ${ok?'copied':'press Ctrl+C'}`; setTimeout(()=>cc.innerHTML='<i class="fa-regular fa-copy"></i> copy',1500); };
+  const ta=$('#notesArea');
+  ta.addEventListener('input',()=>{
+    profile.notes[v.id]=ta.value; clearTimeout(notesTimer);
+    notesTimer=setTimeout(()=>{ saveProfile(); const s=$('#notesSaved'); if(s){ s.textContent='saved'; setTimeout(()=>s.textContent='',1200); } },500);
+  });
+  renderPlaylist();
+  // refresh banner progress bar
+  const bar=$('#courseDetail .detail-banner .progress > i'); if(bar){ bar.style.width=courseProgress(c).pct+'%'; }
+}
+
+/* ---------- quiz (student) ---------- */
+function renderQuiz(c){
+  const mount=$('#quizMount'); if(!mount) return;
+  const qs=c.quiz||[]; if(!qs.length){ mount.innerHTML=''; return; }
+  mount.innerHTML=`<div class="quiz">
+    <h2><i class="fa-solid fa-clipboard-question"></i> Knowledge check</h2>
+    <div class="qsub">${qs.length} question${qs.length===1?'':'s'} &middot; test what you picked up. Answers stay on your device.</div>
+    <div id="quizForm">${qs.map((q,i)=>`<div class="quiz-q" data-q="${i}">
+      <div class="qt"><b>Q${i+1}</b>${esc(q.q)}</div>
+      ${(q.options||[]).map((o,j)=>`<label class="quiz-opt"><input type="radio" name="q${i}" value="${j}"> <span>${esc(o)}</span></label>`).join('')}
+    </div>`).join('')}</div>
+    <button class="btn btn-primary" id="quizSubmit"><i class="fa-solid fa-check-double"></i> Submit answers</button>
+    <div id="quizResult"></div>
+  </div>`;
+  $('#quizSubmit').onclick=()=>{
+    let score=0;
+    qs.forEach((q,i)=>{
+      const sel=$(`#quizForm input[name="q${i}"]:checked`);
+      const block=$(`#quizForm .quiz-q[data-q="${i}"]`);
+      $$('.quiz-opt',block).forEach((opt,j)=>{
+        opt.classList.remove('correct','wrong');
+        if(j===q.answer) opt.classList.add('correct');
+        else if(sel && +sel.value===j) opt.classList.add('wrong');
+      });
+      if(sel && +sel.value===q.answer) score++;
+    });
+    const pct=Math.round(score/qs.length*100); const pass=pct>=70;
+    profile.quiz[c.id]={best:Math.max(pct, profile.quiz[c.id]?.best||0), ts:Date.now()}; saveProfile();
+    $('#quizResult').innerHTML=`<div class="quiz-result ${pass?'pass':'fail'}">${pass?'<i class="fa-solid fa-trophy"></i>':'<i class="fa-solid fa-rotate-right"></i>'} You scored ${score}/${qs.length} (${pct}%). ${pass?'Nice — you passed.':'Review the highlighted answers and try again.'}</div>`;
+  };
+}
+
+/* ---------- comments (giscus) ---------- */
+function renderComments(c){
+  const mount=$('#commentsMount'); if(!mount) return;
+  const g=db.settings?.giscus||{};
+  if(!g.repo || !g.repoId || !g.categoryId){
+    mount.innerHTML=`<div class="comments"><h2><i class="fa-solid fa-comments"></i> Discussion</h2>
+      <div class="comments-empty">Comments aren't set up yet. They run on free <b>giscus</b> (GitHub Discussions) — no server needed.
+      Create a public repo, enable Discussions, install the <code>giscus</code> app, then paste your <code>repo</code>, <code>repo-id</code> and <code>category-id</code> in the admin <b>Settings</b> tab. Once saved, a discussion thread appears under every course.</div></div>`;
+    return;
+  }
+  mount.innerHTML=`<div class="comments"><h2><i class="fa-solid fa-comments"></i> Discussion</h2><div id="giscusBox"></div></div>`;
+  const s=document.createElement('script');
+  s.src='https://giscus.app/client.js';
+  s.setAttribute('data-repo',g.repo); s.setAttribute('data-repo-id',g.repoId);
+  s.setAttribute('data-category',g.category||'General'); s.setAttribute('data-category-id',g.categoryId);
+  s.setAttribute('data-mapping','specific'); s.setAttribute('data-term','course:'+c.id);
+  s.setAttribute('data-reactions-enabled','1'); s.setAttribute('data-input-position','top');
+  s.setAttribute('data-theme', currentTheme()==='dark'?'dark':'light'); s.setAttribute('data-lang','en');
+  s.crossOrigin='anonymous'; s.async=true;
+  $('#giscusBox').appendChild(s);
+}
+function giscusSetTheme(t){
+  const f=document.querySelector('iframe.giscus-frame'); if(!f) return;
+  f.contentWindow.postMessage({giscus:{setConfig:{theme:t}}},'https://giscus.app');
+}
+
+/* ============================================================ ADMIN ============================================================ */
+function renderAdmin(){ const root=$('#adminRoot'); if(!adminAuthed){ renderGate(root); return; } renderAdminShell(root); }
+
+function renderGate(root){
+  root.innerHTML=`<div class="admin-gate"><div class="gate-term">
+    <div class="term-bar"><span class="c r"></span><span class="c y"></span><span class="c g"></span><span class="t">auth // instructor access</span></div>
+    <div class="gate-body">
+      <div class="l1">$ sudo ./hexploit-labs --admin</div><div class="l2">[*] authentication required</div>
+      <div class="gate-input"><span class="pr">&gt;</span><input type="password" id="gatePass" placeholder="enter passphrase" autocomplete="off" autofocus></div>
+      <div class="gate-err" id="gateErr"></div>
+      <button class="btn btn-primary" id="gateBtn" style="width:100%;margin-top:6px"><i class="fa-solid fa-unlock"></i> Authenticate</button>
+      <div class="gate-hint">demo passphrase: <span class="green">admin123</span> &middot; change ADMIN_PASS in the source before deploying</div>
+    </div></div></div>`;
+  const go=()=>{ if($('#gatePass').value===ADMIN_PASS){ adminAuthed=true; toast('Access granted'); renderAdmin(); } else { $('#gateErr').textContent='[!] access denied — wrong passphrase'; $('#gatePass').value=''; $('#gatePass').focus(); } };
+  $('#gateBtn').onclick=go; $('#gatePass').addEventListener('keydown',e=>{ if(e.key==='Enter') go(); });
+}
+
+function renderAdminShell(root){
+  root.innerHTML=`
+    <div class="admin-head">
+      <div class="ah-l"><h1><i class="fa-solid fa-terminal"></i> Instructor Panel</h1><p>edits save to this browser &middot; publish by exporting courses.json</p></div>
+      <div class="admin-bar">
+        <button class="btn btn-ghost btn-sm" id="loadJsonBtn"><i class="fa-solid fa-rotate"></i> Load courses.json</button>
+        <button class="btn btn-primary btn-sm" id="exportJsonBtn"><i class="fa-solid fa-file-export"></i> Export courses.json</button>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Lock</button>
+      </div>
+    </div>
+    <div class="adm-tabs">
+      <button class="adm-tab ${adminTab==='courses'?'active':''}" data-tab="courses">Courses</button>
+      <button class="adm-tab ${adminTab==='paths'?'active':''}" data-tab="paths">Roadmaps</button>
+      <button class="adm-tab ${adminTab==='settings'?'active':''}" data-tab="settings">Settings</button>
+    </div>
+    <div id="adminTabBody"></div>`;
+  $('#logoutBtn').onclick=()=>{ adminAuthed=false; toast('Panel locked'); location.hash='#/'; };
+  $('#exportJsonBtn').onclick=exportCoursesJson;
+  $('#loadJsonBtn').onclick=loadFromCoursesJson;
+  $$('.adm-tab').forEach(t=>t.onclick=()=>{ adminTab=t.dataset.tab; renderAdminShell(root); });
+  if(adminTab==='courses') renderTabCourses();
+  else if(adminTab==='paths') renderTabPaths();
+  else renderTabSettings();
+}
+
+function renderTabCourses(){
+  const body=$('#adminTabBody');
+  const totalV=db.courses.reduce((n,c)=>n+(c.videos?.length||0),0);
+  const pub=db.courses.filter(c=>c.published).length;
+  const quizzes=db.courses.filter(c=>(c.quiz||[]).length).length;
+  body.innerHTML=`
+    <div class="admin-stats">
+      <div class="astat"><div class="n">${db.courses.length}</div><div class="l">Courses</div></div>
+      <div class="astat"><div class="n">${pub}</div><div class="l">Published</div></div>
+      <div class="astat"><div class="n">${totalV}</div><div class="l">Lessons</div></div>
+      <div class="astat"><div class="n">${quizzes}</div><div class="l">With quiz</div></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary btn-sm" id="newCourseBtn"><i class="fa-solid fa-plus"></i> New course</button></div>
+    <div id="adminCourses"></div>`;
+  $('#newCourseBtn').onclick=()=>courseModal(null);
+  renderAdminCourses();
+}
+
+function renderAdminCourses(){
+  const wrap=$('#adminCourses');
+  if(!db.courses.length){ wrap.innerHTML=`<div class="empty"><i class="fa-solid fa-folder-plus"></i><h3>No courses yet</h3><p>Create your first course to start building the catalog.</p></div>`; return; }
+  wrap.innerHTML=db.courses.map(c=>{
+    const vids=c.videos||[]; const thumb=courseThumb(c); const qn=(c.quiz||[]).length;
+    return `<div class="adm-course">
+      <div class="ac-head">
+        ${thumb?`<img class="ac-thumb" src="${esc(thumb)}" alt="" onerror="this.style.visibility='hidden'">`:'<div class="ac-thumb"></div>'}
+        <div class="ac-info"><h3>${esc(c.title)} <span class="ac-cat">${esc(c.category||'General')}</span> ${c.level?`<span class="badge lvl-${c.level.toLowerCase()}">${esc(c.level)}</span>`:''} ${c.published?'':'<span class="badge-unpub">UNPUBLISHED</span>'}</h3>
+          <p>${vids.length} lesson${vids.length===1?'':'s'} &middot; ${qn} quiz Q &middot; ${c.hours?c.hours+'h':'— h'}</p></div>
+        <div class="ac-actions">
+          <button class="btn btn-ghost btn-sm" data-act="quiz" data-c="${esc(c.id)}"><i class="fa-solid fa-clipboard-question"></i> Quiz</button>
+          <button class="btn btn-ghost btn-sm" data-act="togglepub" data-c="${esc(c.id)}"><i class="fa-solid ${c.published?'fa-eye':'fa-eye-slash'}"></i> ${c.published?'Live':'Hidden'}</button>
+          <button class="btn btn-ghost btn-sm" data-act="editcourse" data-c="${esc(c.id)}"><i class="fa-solid fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" data-act="delcourse" data-c="${esc(c.id)}"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="ac-videos">
+        ${vids.map((v,i)=>{ const id=ytId(v.youtubeId); const rc=(v.resources||[]).filter(r=>safeUrl(r.url)).length;
+          return `<div class="av-item">
+            <span class="av-idx">${String(i+1).padStart(2,'0')}</span>
+            ${id?`<img class="av-thumb" src="${ytThumb(id)}" alt="" onerror="this.style.visibility='hidden'">`:'<div class="av-thumb"></div>'}
+            <div class="av-info"><h4>${esc(v.title)}</h4>
+              <div class="av-sub">
+                <span><i class="fa-brands fa-youtube" style="color:#ff4d5e"></i> ${id?esc(id):'<span class="badq">invalid</span>'}</span>
+                <span><i class="fa-solid fa-download" style="color:${rc?'var(--green-dim)':'var(--text-faint)'}"></i> ${rc} file${rc===1?'':'s'}</span>
+                ${v.command?'<span><i class="fa-solid fa-terminal" style="color:var(--green-dim)"></i> cmd</span>':''}
+                ${safeUrl(v.labUrl)?'<span><i class="fa-solid fa-flask" style="color:var(--green-dim)"></i> lab</span>':''}
+              </div></div>
+            <div class="av-ctrl">
+              <button data-act="vup" data-c="${esc(c.id)}" data-v="${esc(v.id)}" ${i===0?'disabled':''}><i class="fa-solid fa-chevron-up"></i></button>
+              <button data-act="vdown" data-c="${esc(c.id)}" data-v="${esc(v.id)}" ${i===vids.length-1?'disabled':''}><i class="fa-solid fa-chevron-down"></i></button>
+              <button data-act="editvideo" data-c="${esc(c.id)}" data-v="${esc(v.id)}"><i class="fa-solid fa-pen"></i></button>
+              <button class="del" data-act="delvideo" data-c="${esc(c.id)}" data-v="${esc(v.id)}"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>`; }).join('')}
+        <button class="add-video-btn" data-act="addvideo" data-c="${esc(c.id)}"><i class="fa-solid fa-plus"></i> Add lesson</button>
+      </div>
+    </div>`;
+  }).join('');
+  $$('#adminCourses [data-act]').forEach(b=>b.onclick=()=>handleAdminAction(b.dataset));
+}
+
+function handleAdminAction(d){
+  const c=courseById(d.c);
+  switch(d.act){
+    case 'togglepub': c.published=!c.published; saveDraft(); toast(c.published?'Course published':'Course hidden'); renderAdminCourses(); break;
+    case 'editcourse': courseModal(c); break;
+    case 'quiz': quizModal(c); break;
+    case 'delcourse': confirmModal(`Delete “${c.title}”?`,'This removes the course and all its lessons. It cannot be undone.',()=>{
+        db.courses=db.courses.filter(x=>x.id!==c.id); db.paths.forEach(p=>p.courseIds=(p.courseIds||[]).filter(id=>id!==c.id)); saveDraft(); toast('Course deleted'); renderAdminShell($('#adminRoot')); }); break;
+    case 'addvideo': videoModal(c,null); break;
+    case 'editvideo': videoModal(c, c.videos.find(v=>v.id===d.v)); break;
+    case 'delvideo': { const v=c.videos.find(x=>x.id===d.v);
+        confirmModal('Delete lesson?',`“${v.title}” will be removed from this course.`,()=>{ c.videos=c.videos.filter(x=>x.id!==d.v); saveDraft(); toast('Lesson deleted'); renderAdminCourses(); }); break; }
+    case 'vup': moveVideo(c,d.v,-1); break;
+    case 'vdown': moveVideo(c,d.v,1); break;
+  }
+}
+function moveVideo(c,vid,dir){ const i=c.videos.findIndex(v=>v.id===vid); const j=i+dir; if(j<0||j>=c.videos.length) return; [c.videos[i],c.videos[j]]=[c.videos[j],c.videos[i]]; saveDraft(); renderAdminCourses(); }
+
+/* ---------- roadmaps tab ---------- */
+function renderTabPaths(){
+  const body=$('#adminTabBody');
+  body.innerHTML=`<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary btn-sm" id="newPathBtn"><i class="fa-solid fa-plus"></i> New roadmap</button></div><div id="pathsAdmin"></div>`;
+  $('#newPathBtn').onclick=()=>pathModal(null);
+  const wrap=$('#pathsAdmin');
+  if(!db.paths.length){ wrap.innerHTML=`<div class="empty"><i class="fa-solid fa-route"></i><h3>No roadmaps yet</h3><p>Chain courses into a guided path for your students.</p></div>`; return; }
+  wrap.innerHTML=db.paths.map(p=>{
+    const courses=(p.courseIds||[]).map(courseById).filter(Boolean);
+    return `<div class="adm-course"><div class="ac-head">
+      <div class="ac-info"><h3><i class="fa-solid fa-route" style="color:var(--green)"></i> ${esc(p.title)}</h3><p>${courses.length} course${courses.length===1?'':'s'} &middot; ${esc(p.description||'no description')}</p></div>
+      <div class="ac-actions"><button class="btn btn-ghost btn-sm" data-pact="edit" data-p="${esc(p.id)}"><i class="fa-solid fa-pen"></i> Edit</button>
+      <button class="btn btn-danger btn-sm" data-pact="del" data-p="${esc(p.id)}"><i class="fa-solid fa-trash"></i></button></div></div>
+      <div class="ac-videos">${courses.length?courses.map((c,i)=>`<div class="av-item"><span class="av-idx">${i+1}</span><div class="av-info"><h4>${esc(c.title)}</h4></div></div>`).join(''):'<p class="mono dim" style="font-size:12px;padding:8px 4px">empty — edit to add courses</p>'}</div>
+    </div>`;
+  }).join('');
+  $$('#pathsAdmin [data-pact]').forEach(b=>b.onclick=()=>{
+    const p=db.paths.find(x=>x.id===b.dataset.p);
+    if(b.dataset.pact==='edit') pathModal(p);
+    else confirmModal(`Delete “${p.title}”?`,'The roadmap will be removed. Courses are not affected.',()=>{ db.paths=db.paths.filter(x=>x.id!==p.id); saveDraft(); toast('Roadmap deleted'); renderTabPaths(); });
+  });
+}
+
+/* ---------- settings tab ---------- */
+function renderTabSettings(){
+  const body=$('#adminTabBody'); const g=db.settings.giscus||{};
+  body.innerHTML=`
+    <div class="settings-card">
+      <h3>Publishing</h3>
+      <p class="sc-sub">Your edits live in this browser. To make them the live catalog every visitor sees, publish a <code>courses.json</code> file next to your site.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" id="setExport"><i class="fa-solid fa-file-export"></i> Export courses.json</button><button class="btn btn-ghost btn-sm" id="setLoad"><i class="fa-solid fa-rotate"></i> Load courses.json from site</button></div>
+      <div class="publish-steps"><b>1.</b> Edit courses here &nbsp; <b>2.</b> Export <code>courses.json</code> &nbsp; <b>3.</b> Upload it next to <code>index.html</code> on your host (GitHub Pages / Netlify) &nbsp; <b>4.</b> Visitors now load your live catalog automatically.</div>
+    </div>
+    <div class="settings-card">
+      <h3>Discussion (comments)</h3>
+      <p class="sc-sub">Comments run on free <b>giscus</b> via GitHub Discussions — no backend. Create a public repo, enable Discussions, install the giscus app at <code>giscus.app</code>, then paste the values it gives you.</p>
+      <div class="fld"><label>data-repo</label><input id="g_repo" value="${esc(g.repo||'')}" placeholder="username/repo"></div>
+      <div class="fld-row"><div class="fld"><label>data-repo-id</label><input id="g_repoId" value="${esc(g.repoId||'')}" placeholder="R_xxx"></div>
+      <div class="fld"><label>data-category-id</label><input id="g_catId" value="${esc(g.categoryId||'')}" placeholder="DIC_xxx"></div></div>
+      <div class="fld"><label>data-category</label><input id="g_cat" value="${esc(g.category||'General')}" placeholder="General"></div>
+      <button class="btn btn-primary btn-sm" id="saveGiscus"><i class="fa-solid fa-floppy-disk"></i> Save discussion settings</button>
+    </div>
+    <div class="settings-card">
+      <h3>Reset</h3>
+      <p class="sc-sub">Clear your local draft and personal progress on this device. Published <code>courses.json</code> is untouched.</p>
+      <button class="btn btn-danger btn-sm" id="resetLocal"><i class="fa-solid fa-eraser"></i> Reset local data</button>
+    </div>`;
+  $('#setExport').onclick=exportCoursesJson; $('#setLoad').onclick=loadFromCoursesJson;
+  $('#saveGiscus').onclick=()=>{ db.settings.giscus={repo:$('#g_repo').value.trim(),repoId:$('#g_repoId').value.trim(),category:$('#g_cat').value.trim()||'General',categoryId:$('#g_catId').value.trim()}; saveDraft(); toast('Discussion settings saved'); };
+  $('#resetLocal').onclick=()=>confirmModal('Reset local data?','Your local course draft, progress, notes and bookmarks on this device will be cleared.',()=>{
+    try{ localStorage.removeItem(DB_KEY); localStorage.removeItem(PROFILE_KEY); localStorage.removeItem(AUTHORED_KEY); }catch(e){}
+    profile=loadProfile(); toast('Local data cleared'); location.hash='#/'; location.reload();
+  });
+}
+
+/* ---------- import/export courses.json ---------- */
+function exportCoursesJson(){
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='courses.json'; a.click(); URL.revokeObjectURL(a.href);
+  toast('courses.json exported');
+}
+async function loadFromCoursesJson(){
+  const fromFile=await fetchCoursesJson();
+  if(!fromFile){
+    // fallback: let them pick a file (works offline / file://)
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json,.json';
+    inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader();
+      r.onload=()=>{ try{ const j=JSON.parse(r.result); if(!j||!Array.isArray(j.courses)) throw 0;
+        confirmModal('Replace local draft?','This overwrites the catalog stored in this browser with the chosen file.',()=>{ db=migrate(j); saveDraft(); toast('Loaded from file'); renderAdminShell($('#adminRoot')); }); }
+      catch(e){ toast('Not a valid courses.json',true); } };
+      r.readAsText(f); };
+    inp.click();
+    toast('No courses.json found on the site — pick a file instead',true);
+    return;
+  }
+  confirmModal('Replace local draft?','This overwrites the catalog stored in this browser with the live courses.json from your site.',()=>{ db=migrate(fromFile); saveDraft(); toast('Synced from courses.json'); renderAdminShell($('#adminRoot')); });
+}
+
+/* ============================================================ MODALS ============================================================ */
+function openModal(html){ $('#modalEl').innerHTML=html; $('#modalBg').classList.add('open'); }
+function closeModal(){ $('#modalBg').classList.remove('open'); $('#modalEl').innerHTML=''; }
+$('#modalBg').addEventListener('click',e=>{ if(e.target===$('#modalBg')) closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && $('#modalBg').classList.contains('open')) closeModal(); });
+
+function courseModal(course){
+  const isEdit=!!course; const c=course||{title:'',description:'',category:'',thumbnail:'',published:true,level:'',hours:'',prerequisites:''};
+  openModal(`
+    <div class="modal-head"><h3><i class="fa-solid ${isEdit?'fa-pen':'fa-folder-plus'}"></i> ${isEdit?'Edit course':'New course'}</h3><button class="x" id="mClose"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="fld"><label>Title <span class="req">*</span></label><input id="f_title" value="${esc(c.title)}" placeholder="e.g. Web Exploitation 101" maxlength="120"></div>
+      <div class="fld-row">
+        <div class="fld"><label>Category</label><input id="f_cat" value="${esc(c.category)}" placeholder="e.g. Web" maxlength="40" list="catList"><datalist id="catList">${categories().filter(x=>x!=='All').map(x=>`<option value="${esc(x)}">`).join('')}</datalist></div>
+        <div class="fld"><label>Visibility</label><select id="f_pub"><option value="1" ${c.published?'selected':''}>Published (live)</option><option value="0" ${!c.published?'selected':''}>Hidden (draft)</option></select></div>
+      </div>
+      <div class="fld-row">
+        <div class="fld"><label>Difficulty</label><select id="f_level"><option value="" ${!c.level?'selected':''}>—</option><option ${c.level==='Beginner'?'selected':''}>Beginner</option><option ${c.level==='Intermediate'?'selected':''}>Intermediate</option><option ${c.level==='Advanced'?'selected':''}>Advanced</option></select></div>
+        <div class="fld"><label>Est. hours</label><input id="f_hours" type="number" min="0" step="0.5" value="${esc(c.hours)}" placeholder="e.g. 3"></div>
+      </div>
+      <div class="fld"><label>Prerequisites <span class="dim">(optional)</span></label><input id="f_pre" value="${esc(c.prerequisites)}" placeholder="e.g. Linux for Hackers"></div>
+      <div class="fld"><label>Description</label><textarea id="f_desc" placeholder="What will students learn?" maxlength="600">${esc(c.description)}</textarea></div>
+      <div class="fld"><label>Thumbnail URL <span class="dim">(optional)</span></label><input id="f_thumb" value="${esc(c.thumbnail)}" placeholder="https://… leave blank to auto-use first video">
+        <div class="hint">Blank = first lesson's YouTube thumbnail is used automatically.</div>
+        <div class="thumb-preview" id="thumbPrev" style="${courseThumb(c)?'':'display:none'}"><img src="${esc(courseThumb(c))}" alt="" onerror="this.parentElement.style.display='none'"></div></div>
+    </div>
+    <div class="modal-foot"><span class="dim mono" style="font-size:11px">${isEdit?'editing existing':'will be added to catalog'}</span><button class="btn btn-primary" id="mSave"><i class="fa-solid fa-floppy-disk"></i> ${isEdit?'Save changes':'Create course'}</button></div>`);
+  $('#mClose').onclick=closeModal;
+  const tp=$('#f_thumb'); tp.addEventListener('input',()=>{ const u=safeUrl(tp.value); const prev=$('#thumbPrev'); if(u){ prev.style.display=''; prev.querySelector('img').src=u; } });
+  $('#mSave').onclick=()=>{
+    const title=$('#f_title').value.trim(); if(!title){ toast('Title is required',true); $('#f_title').focus(); return; }
+    const hv=$('#f_hours').value.trim();
+    const data={ title, category:$('#f_cat').value.trim(), description:$('#f_desc').value.trim(), thumbnail:$('#f_thumb').value.trim(),
+      published:$('#f_pub').value==='1', level:$('#f_level').value, hours: hv?Number(hv):null, prerequisites:$('#f_pre').value.trim() };
+    if(isEdit){ Object.assign(course,data); toast('Course updated'); }
+    else { db.courses.push({id:uid('c'),...data,createdAt:Date.now(),videos:[],quiz:[]}); toast('Course created'); }
+    saveDraft(); closeModal(); renderTabCourses();
+  };
+  setTimeout(()=>$('#f_title').focus(),50);
+}
+
+function videoModal(course, video){
+  const isEdit=!!video; const v=video||{title:'',youtubeId:'',resources:[],command:'',labUrl:'',labLabel:''};
+  let resList=(v.resources||[]).map(r=>({label:r.label||'',url:r.url||''})); if(!resList.length) resList=[{label:'',url:''}];
+  openModal(`
+    <div class="modal-head"><h3><i class="fa-solid ${isEdit?'fa-pen':'fa-circle-plus'}"></i> ${isEdit?'Edit lesson':'Add lesson'}</h3><button class="x" id="mClose"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="fld"><label>Lesson title <span class="req">*</span></label><input id="v_title" value="${esc(v.title)}" placeholder="e.g. SQL injection from scratch" maxlength="140"></div>
+      <div class="fld"><label>YouTube video <span class="req">*</span></label><input id="v_yt" value="${esc(v.youtubeId)}" placeholder="paste video ID or full youtube URL">
+        <div class="hint">Accepts an 11-char ID or any youtube.com / youtu.be link.</div>
+        <div class="thumb-preview" id="vThumbPrev" style="${ytId(v.youtubeId)?'':'display:none'}"><img src="${ytThumb(ytId(v.youtubeId))}" alt="" onerror="this.parentElement.style.display='none'"></div></div>
+      <div class="fld"><label>Downloadable resources <span class="dim">(optional, multiple)</span></label><div id="resRows"></div><button class="add-row" id="addRes"><i class="fa-solid fa-plus"></i> add resource</button>
+        <div class="hint">Label + public URL (PDF, ZIP, repo, slides…). Empty rows are ignored.</div></div>
+      <div class="fld"><label>Command / code block <span class="dim">(optional)</span></label><textarea id="v_cmd" placeholder="commands shown in a copy-able terminal block" style="font-family:'JetBrains Mono';min-height:70px">${esc(v.command)}</textarea></div>
+      <div class="fld-row"><div class="fld"><label>Lab / CTF link <span class="dim">(optional)</span></label><input id="v_lab" value="${esc(v.labUrl)}" placeholder="https://tryhackme.com/room/…"></div>
+        <div class="fld"><label>Lab button label</label><input id="v_lablbl" value="${esc(v.labLabel)}" placeholder="Practice this"></div></div>
+    </div>
+    <div class="modal-foot"><span class="dim mono" style="font-size:11px">course: ${esc(course.title)}</span><button class="btn btn-primary" id="mSave"><i class="fa-solid fa-floppy-disk"></i> ${isEdit?'Save lesson':'Add lesson'}</button></div>`);
+  $('#mClose').onclick=closeModal;
+  const yt=$('#v_yt'); yt.addEventListener('input',()=>{ const id=ytId(yt.value); const prev=$('#vThumbPrev'); if(id){ prev.style.display=''; prev.querySelector('img').src=ytThumb(id); } else prev.style.display='none'; });
+  function drawRes(){
+    $('#resRows').innerHTML=resList.map((r,i)=>`<div class="res-edit"><input data-ri="${i}" data-k="label" value="${esc(r.label)}" placeholder="label"><input data-ri="${i}" data-k="url" value="${esc(r.url)}" placeholder="https://…"><button class="rm" data-rm="${i}"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+    $$('#resRows input').forEach(inp=>inp.oninput=()=>{ resList[+inp.dataset.ri][inp.dataset.k]=inp.value; });
+    $$('#resRows .rm').forEach(b=>b.onclick=()=>{ resList.splice(+b.dataset.rm,1); if(!resList.length) resList=[{label:'',url:''}]; drawRes(); });
+  }
+  drawRes();
+  $('#addRes').onclick=()=>{ resList.push({label:'',url:''}); drawRes(); };
+  $('#mSave').onclick=()=>{
+    const title=$('#v_title').value.trim(); const id=ytId($('#v_yt').value);
+    if(!title){ toast('Lesson title is required',true); $('#v_title').focus(); return; }
+    if(!id){ toast('A valid YouTube ID or URL is required',true); $('#v_yt').focus(); return; }
+    const resources=resList.map(r=>({label:r.label.trim()||'Download',url:r.url.trim()})).filter(r=>r.url);
+    for(const r of resources){ if(!safeUrl(r.url)){ toast('Each resource URL must be valid http(s)',true); return; } }
+    const lab=$('#v_lab').value.trim(); if(lab && !safeUrl(lab)){ toast('Lab link must be a valid http(s) URL',true); return; }
+    const data={title,youtubeId:id,resources,command:$('#v_cmd').value,labUrl:lab,labLabel:$('#v_lablbl').value.trim()};
+    if(isEdit){ Object.assign(video,data); toast('Lesson saved'); }
+    else { course.videos=course.videos||[]; course.videos.push({id:uid('v'),...data}); toast('Lesson added'); }
+    saveDraft(); closeModal(); renderAdminCourses();
+  };
+  setTimeout(()=>$('#v_title').focus(),50);
+}
+
+/* ---------- quiz editor ---------- */
+function quizModal(course){
+  const list=course.quiz||(course.quiz=[]);
+  openModal(`
+    <div class="modal-head"><h3><i class="fa-solid fa-clipboard-question"></i> Quiz — ${esc(course.title)}</h3><button class="x" id="mClose"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body" id="quizBody"></div>
+    <div class="modal-foot"><button class="btn btn-ghost btn-sm" id="addQ"><i class="fa-solid fa-plus"></i> Add question</button><button class="btn btn-primary" id="qDone"><i class="fa-solid fa-check"></i> Done</button></div>`);
+  $('#mClose').onclick=()=>{ saveDraft(); closeModal(); renderAdminCourses(); };
+  $('#qDone').onclick=()=>{ saveDraft(); closeModal(); toast('Quiz saved'); renderAdminCourses(); };
+  function draw(){
+    const body=$('#quizBody');
+    if(!list.length){ body.innerHTML=`<p class="mono dim" style="font-size:13px">No questions yet. Add one below.</p>`; }
+    else body.innerHTML=list.map((q,i)=>`<div class="adm-course" style="margin-bottom:12px"><div style="padding:14px 16px">
+      <div class="fld"><label>Question ${i+1} <button class="rm" style="float:right;border:none;color:var(--danger);font-size:12px" data-delq="${i}"><i class="fa-solid fa-trash"></i></button></label><input data-qi="${i}" data-qk="q" value="${esc(q.q)}" placeholder="question text"></div>
+      ${[0,1,2,3].map(j=>`<div class="res-edit"><label class="chk" style="margin:0"><input type="radio" name="ans${i}" ${q.answer===j?'checked':''} data-ans="${i}" data-j="${j}"></label><input data-opt="${i}" data-j="${j}" value="${esc((q.options||[])[j]||'')}" placeholder="option ${j+1}${j>1?' (optional)':''}"></div>`).join('')}
+      <div class="hint">Select the radio next to the correct option.</div></div></div>`).join('');
+    $$('#quizBody [data-qk]').forEach(inp=>inp.oninput=()=>{ list[+inp.dataset.qi].q=inp.value; });
+    $$('#quizBody [data-opt]').forEach(inp=>inp.oninput=()=>{ const q=list[+inp.dataset.opt]; q.options=q.options||[]; q.options[+inp.dataset.j]=inp.value; });
+    $$('#quizBody [data-ans]').forEach(r=>r.onchange=()=>{ list[+r.dataset.ans].answer=+r.dataset.j; });
+    $$('#quizBody [data-delq]').forEach(b=>b.onclick=()=>{ list.splice(+b.dataset.delq,1); draw(); });
+  }
+  $('#addQ').onclick=()=>{ list.push({id:uid('q'),q:'',options:['','','',''],answer:0}); draw(); };
+  draw();
+}
+
+/* ---------- path editor ---------- */
+function pathModal(path){
+  const isEdit=!!path; const p=path||{title:'',description:'',courseIds:[]};
+  let chosen=[...(p.courseIds||[])];
+  openModal(`
+    <div class="modal-head"><h3><i class="fa-solid ${isEdit?'fa-pen':'fa-route'}"></i> ${isEdit?'Edit roadmap':'New roadmap'}</h3><button class="x" id="mClose"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="fld"><label>Title <span class="req">*</span></label><input id="p_title" value="${esc(p.title)}" placeholder="e.g. Become a Smart Contract Auditor" maxlength="120"></div>
+      <div class="fld"><label>Description</label><textarea id="p_desc" placeholder="What does this path lead to?" maxlength="400">${esc(p.description)}</textarea></div>
+      <div class="fld"><label>Courses in order</label><div class="pick-list" id="chosenList"></div></div>
+      <div class="fld"><label>Add a course</label><select id="addCourseSel"><option value="">— pick a course —</option></select></div>
+    </div>
+    <div class="modal-foot"><span class="dim mono" style="font-size:11px">${isEdit?'editing':'new path'}</span><button class="btn btn-primary" id="mSave"><i class="fa-solid fa-floppy-disk"></i> ${isEdit?'Save roadmap':'Create roadmap'}</button></div>`);
+  $('#mClose').onclick=closeModal;
+  function drawChosen(){
+    const wrap=$('#chosenList');
+    wrap.innerHTML = chosen.length ? chosen.map((id,i)=>{ const c=courseById(id); if(!c) return '';
+      return `<div class="pick-item"><span class="pi-ord">${i+1}</span><span style="flex:1">${esc(c.title)}</span><div class="pi-ctrl">
+        <button class="rm" data-up="${i}" ${i===0?'disabled':''}><i class="fa-solid fa-chevron-up"></i></button>
+        <button class="rm" data-down="${i}" ${i===chosen.length-1?'disabled':''}><i class="fa-solid fa-chevron-down"></i></button>
+        <button class="rm" data-rmc="${i}"><i class="fa-solid fa-xmark"></i></button></div></div>`; }).join('')
+      : `<div class="pick-item"><span class="mono dim" style="font-size:12px">no courses yet — add below</span></div>`;
+    $$('#chosenList [data-rmc]').forEach(b=>b.onclick=()=>{ chosen.splice(+b.dataset.rmc,1); drawChosen(); drawSelect(); });
+    $$('#chosenList [data-up]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.up; [chosen[i-1],chosen[i]]=[chosen[i],chosen[i-1]]; drawChosen(); });
+    $$('#chosenList [data-down]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.down; [chosen[i+1],chosen[i]]=[chosen[i],chosen[i+1]]; drawChosen(); });
+  }
+  function drawSelect(){
+    const sel=$('#addCourseSel'); const avail=db.courses.filter(c=>!chosen.includes(c.id));
+    sel.innerHTML=`<option value="">— pick a course —</option>`+avail.map(c=>`<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('');
+    sel.onchange=()=>{ if(sel.value){ chosen.push(sel.value); drawChosen(); drawSelect(); } };
+  }
+  drawChosen(); drawSelect();
+  $('#mSave').onclick=()=>{
+    const title=$('#p_title').value.trim(); if(!title){ toast('Title is required',true); return; }
+    const data={title,description:$('#p_desc').value.trim(),courseIds:chosen};
+    if(isEdit){ Object.assign(path,data); toast('Roadmap updated'); }
+    else { db.paths.push({id:uid('p'),...data}); toast('Roadmap created'); }
+    saveDraft(); closeModal(); renderTabPaths();
+  };
+  setTimeout(()=>$('#p_title').focus(),50);
+}
+
+function confirmModal(title, body, onYes){
+  openModal(`<div class="modal-head"><h3><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i> ${esc(title)}</h3><button class="x" id="mClose"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body"><p style="color:var(--text-dim);font-size:14px">${esc(body)}</p></div>
+    <div class="modal-foot"><button class="btn btn-ghost" id="mCancel">Cancel</button><button class="btn btn-danger" id="mYes"><i class="fa-solid fa-check"></i> Confirm</button></div>`);
+  $('#mClose').onclick=closeModal; $('#mCancel').onclick=closeModal; $('#mYes').onclick=()=>{ closeModal(); onYes(); };
+}
+
+/* ============================================================ THEME ============================================================ */
+function currentTheme(){ return document.documentElement.getAttribute('data-theme')||'dark'; }
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  try{ localStorage.setItem('hexploit_theme', t); }catch(e){}
+  const icon=$('#themeToggle')?.querySelector('i'); if(icon) icon.className=t==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';
+  const meta=$('#metaTheme'); if(meta) meta.setAttribute('content', t==='dark'?'#0a0e14':'#f7f9fb');
+  const tt=$('#themeToggle'); if(tt) tt.title=t==='dark'?'Switch to light theme':'Switch to dark theme';
+  giscusSetTheme(t==='dark'?'dark':'light');
+}
+$('#themeToggle').addEventListener('click', ()=> applyTheme(currentTheme()==='dark'?'light':'dark'));
+
+/* roadmaps nav scroll */
+document.addEventListener('click', e=>{
+  const a=e.target.closest('[data-scroll]'); if(!a) return; e.preventDefault();
+  if(location.hash!=='#/'&&location.hash!==''){ location.hash='#/'; setTimeout(()=>{ const el=$('#'+a.dataset.scroll); if(el) el.scrollIntoView({behavior:'smooth'}); },120); }
+  else { const el=$('#'+a.dataset.scroll); if(el) el.scrollIntoView({behavior:'smooth'}); }
+});
+
+/* hero terminal typewriter */
+function bootTerminal(){
+  const lines=[
+    {t:'<span class="pr">root@hexploit</span>:<span class="ar">~</span>$ whoami',d:28},
+    {t:'<span class="hl">student</span> // here to learn offense',d:14,pre:true},
+    {t:'<span class="pr">root@hexploit</span>:<span class="ar">~</span>$ ./enroll --cost',d:28},
+    {t:'<span class="ok">[+]</span> price ........ <span class="hl">&euro;0.00</span>',d:14,pre:true},
+    {t:'<span class="ok">[+]</span> signup ....... <span class="hl">not required</span>',d:14,pre:true},
+    {t:'<span class="ok">[+]</span> lab files .... <span class="hl">included</span>',d:14,pre:true},
+    {t:'<span class="pr">root@hexploit</span>:<span class="ar">~</span>$ start_learning <span class="cursor"></span>',d:28,keep:true},
+  ];
+  const box=$('#termBody'); if(!box) return; box.innerHTML=''; let li=0;
+  function typeLine(){
+    if(li>=lines.length) return; const cfg=lines[li];
+    const div=document.createElement('div'); div.className='line'; box.appendChild(div);
+    if(cfg.pre){ div.innerHTML=cfg.t; li++; setTimeout(typeLine,420); return; }
+    const full=cfg.t; let i=0;
+    (function tick(){ i+=2; div.innerHTML=full.slice(0,i); if(i<full.length){ setTimeout(tick,cfg.d); } else { div.innerHTML=full; li++; setTimeout(typeLine,300); } })();
+  }
+  typeLine();
+}
+
+/* ============================================================ BOOT ============================================================ */
+async function boot(){
+  if(isAuthor()){ db=migrate(readDraft()||seed()); }
+  else { const f=await fetchCoursesJson(); db = f ? migrate(f) : migrate(readDraft()||seed()); }
+  applyTheme(currentTheme());
+  router();
+  bootTerminal();
+}
+boot();
+</script>
+</body>
+</html>
